@@ -87,6 +87,7 @@ const UserList: React.FC = () => {
         placeholder="Search"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ marginBottom: "10px" }}
       />
       <TableContainer component={Paper}>
         <Table>

@@ -1,7 +1,8 @@
-import UserList from "./routes/users";
+import UserList from "./routes/getUsers";
 import "./App.css";
 import { Container } from "@mui/material";
 import ResponsiveAppBar from "./layout/ResponsiveAppBar";
+import PostUsers from "./routes/postUsers";
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <div>
         <ResponsiveAppBar />
         <UserList />
+        <PostUsers />
       </div>
     </Container>
   );
