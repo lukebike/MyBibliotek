@@ -17,12 +17,15 @@ import {
   TableHead,
   TableRow,
   TextField,
+  TablePagination,
 } from "@mui/material";
 
 const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     api
@@ -45,6 +48,22 @@ const UserList: React.FC = () => {
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const paginatedUsers = filteredUsers.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -81,7 +100,7 @@ const UserList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredUsers.map((u) => (
+            {paginatedUsers.map((u) => (
               <TableRow key={u.id}>
                 <TableCell>{u.id}</TableCell>
                 <TableCell>{`${u.firstName} ${u.lastName}`}</TableCell>
@@ -97,6 +116,15 @@ const UserList: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        component="div"
+        count={filteredUsers.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50]}
+      />
     </Box>
   );
 };
