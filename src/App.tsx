@@ -1,12 +1,13 @@
 import UserList from "./routes/users";
 import "./App.css";
 import { Container, Typography } from "@mui/material";
+import ResponsiveAppBar from "./layout/ResponsiveAppBar";
 
 function App() {
   return (
     <Container maxWidth="lg">
       <div>
-        <Typography variant="h3">Library System</Typography>
+        <ResponsiveAppBar />
         <UserList />
       </div>
     </Container>
