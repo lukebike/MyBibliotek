@@ -19,13 +19,15 @@ import {
   TextField,
   TablePagination,
 } from "@mui/material";
+import { useDebounce } from "../utils/useDebounce";
 
 const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {
     api
@@ -35,18 +37,30 @@ const UserList: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedSearchTerm]);
+
   if (loading)
     return (
-      <div>
-        Loading... <CircularProgress />
-      </div>
+      <Box
+        sx={{
+          display: "flex",
+          alignContent: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography variant="h4">Loading... </Typography> <CircularProgress />
+      </Box>
     );
 
   const filteredUsers = users.filter(
     (user) =>
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      user.firstName
+        .toLowerCase()
+        .includes(debouncedSearchTerm.toLowerCase()) ||
+      user.lastName.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
 
   const paginatedUsers = filteredUsers.slice(
@@ -94,26 +108,34 @@ const UserList: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>User ID</TableCell>
-              <TableCell>User ID</TableCell>
-              <TableCell>User ID</TableCell>
-              <TableCell>User ID</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Registration Date</TableCell>
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedUsers.map((u) => (
-              <TableRow key={u.id}>
-                <TableCell>{u.id}</TableCell>
-                <TableCell>{`${u.firstName} ${u.lastName}`}</TableCell>
-                <TableCell>{u.email}</TableCell>
-                <TableCell>{u.registrationDate}</TableCell>
-                <TableCell>
-                  <IconButton>
-                    <MoreVertIcon />
-                  </IconButton>
+            {paginatedUsers.length > 0 ? (
+              paginatedUsers.map((u) => (
+                <TableRow key={u.id}>
+                  <TableCell>{u.id}</TableCell>
+                  <TableCell>{`${u.firstName} ${u.lastName}`}</TableCell>
+                  <TableCell>{u.email}</TableCell>
+                  <TableCell>{u.registrationDate}</TableCell>
+                  <TableCell align="right">
+                    <IconButton>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No users found.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
