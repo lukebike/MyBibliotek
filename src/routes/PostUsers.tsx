@@ -1,20 +1,12 @@
-import React, { useState } from "react";
 import api from "../api";
 import { Box, TextField, Button, Paper, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
-
-type CreateUser = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
+import type { CreateUser } from "../types/CreateUser";
 
 export default function PostUsers() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<CreateUser>();
 
@@ -109,7 +101,13 @@ export default function PostUsers() {
         <Button
           type="submit"
           variant="contained"
-          sx={{ mt: 2, backgroundColor: "grey" }}
+          sx={{
+            mt: 2,
+            backgroundColor: "#19bfcf",
+            "&:hover": {
+              backgroundColor: "#14959c",
+            },
+          }}
         >
           Submit Form!
         </Button>

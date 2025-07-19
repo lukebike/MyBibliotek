@@ -66,7 +66,7 @@ const UserList: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Paper elevation={3} sx={{ p: 3 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
         <Typography variant="h4">Manage Users</Typography>
         <Button
@@ -89,7 +89,7 @@ const UserList: React.FC = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         sx={{ marginBottom: "10px" }}
       />
-      <TableContainer component={Paper}>
+      <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -126,7 +126,7 @@ const UserList: React.FC = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 25, 50]}
       />
-    </Box>
+    </Paper>
   );
 };
 
