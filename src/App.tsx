@@ -1,18 +1,20 @@
-import UserList from "./routes/getUsers";
+import UserList from "./routes/GetUsers";
 import "./App.css";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import ResponsiveAppBar from "./layout/ResponsiveAppBar";
-import PostUsers from "./routes/postUsers";
+import PostUsers from "./routes/PostUsers";
 
 function App() {
   return (
-    <Container maxWidth="lg">
-      <div>
-        <ResponsiveAppBar />
-        <UserList />
-        <PostUsers />
-      </div>
-    </Container>
+    <Box>
+      <Container maxWidth="lg">
+        <div>
+          <ResponsiveAppBar />
+          <UserList />
+          <PostUsers />
+        </div>
+      </Container>
+    </Box>
   );
 }
 
