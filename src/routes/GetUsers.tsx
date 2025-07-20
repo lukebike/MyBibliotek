@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import api from "../api";
 import type { User } from "../types/User";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -11,6 +11,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { DataGrid } from "@mui/x-data-grid";
 import { getUserColumns } from "../components/GetUserColumns";
 import { useUserActionsMenu } from "../hooks/useUserMenu";
+import Fuse from "fuse.js";
 
 const GetUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -18,6 +19,14 @@ const GetUsers: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const fuse = useMemo(() => {
+    const fuseOptions = {
+      threshold: 0.3,
+      keys: ["firstName", "lastName", "email"],
+    };
+    return new Fuse(users, fuseOptions);
+  }, [users]);
 
   const { handleMenuOpen, UserMenu } = useUserActionsMenu();
   const columns = getUserColumns(handleMenuOpen);
@@ -43,14 +52,9 @@ const GetUsers: React.FC = () => {
       </Box>
     );
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.firstName
-        .toLowerCase()
-        .includes(debouncedSearchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
-  );
+  const filteredUsers = debouncedSearchTerm.trim()
+    ? fuse.search(debouncedSearchTerm).map((result) => result.item)
+    : users;
 
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
