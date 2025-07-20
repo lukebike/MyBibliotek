@@ -6,28 +6,21 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import {
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  TablePagination,
-} from "@mui/material";
-import { useDebounce } from "../utils/useDebounce";
+import { Paper, TextField } from "@mui/material";
+import { useDebounce } from "../hooks/useDebounce";
+import { DataGrid } from "@mui/x-data-grid";
+import { getUserColumns } from "../components/GetUserColumns";
+import { useUserActionsMenu } from "../hooks/useUserMenu";
 
 const GetUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const { handleMenuOpen, UserMenu } = useUserActionsMenu();
+  const columns = getUserColumns(handleMenuOpen);
 
   useEffect(() => {
     api
@@ -36,10 +29,6 @@ const GetUsers: React.FC = () => {
       .catch((err) => console.error("Error fetching users: ", err))
       .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    setPage(0);
-  }, [debouncedSearchTerm]);
 
   if (loading)
     return (
@@ -63,22 +52,6 @@ const GetUsers: React.FC = () => {
       user.email.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
   );
 
-  const paginatedUsers = filteredUsers.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
@@ -99,56 +72,27 @@ const GetUsers: React.FC = () => {
       </Box>
       <TextField
         fullWidth
-        placeholder="Search"
+        placeholder="Search..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         sx={{ marginBottom: "10px" }}
       />
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>User ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Registration Date</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedUsers.length > 0 ? (
-              paginatedUsers.map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell>{u.id}</TableCell>
-                  <TableCell>{`${u.firstName} ${u.lastName}`}</TableCell>
-                  <TableCell>{u.email}</TableCell>
-                  <TableCell>{u.registrationDate}</TableCell>
-                  <TableCell align="right">
-                    <IconButton>
-                      <MoreVertIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No users found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        component="div"
-        count={filteredUsers.length}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-      />
+      <Box sx={{ height: "100%", width: "100%" }}>
+        <DataGrid
+          rows={filteredUsers}
+          columns={columns}
+          loading={loading}
+          pageSizeOptions={[5, 10, 25]}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: rowsPerPage },
+            },
+          }}
+          onPaginationModelChange={(model) => setRowsPerPage(model.pageSize)}
+          disableRowSelectionOnClick
+        />
+      </Box>
+      <UserMenu />
     </Paper>
   );
 };
