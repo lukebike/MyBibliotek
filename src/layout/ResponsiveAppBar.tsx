@@ -14,6 +14,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Container } from "@mui/material";
+import { Link } from "react-router";
 
 interface Props {
   /**
@@ -83,6 +84,8 @@ export default function DrawerAppBar(props: Props) {
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               {navItems.map((item) => (
                 <Button
+                  component={Link}
+                  to={`/${item.toLowerCase()}`}
                   key={item}
                   sx={{ color: "inherit", textTransform: "none" }}
                 >

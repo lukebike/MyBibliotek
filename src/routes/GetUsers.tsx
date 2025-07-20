@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { useDebounce } from "../utils/useDebounce";
 
-const UserList: React.FC = () => {
+const GetUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -84,6 +84,7 @@ const UserList: React.FC = () => {
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
         <Typography variant="h4">Manage Users</Typography>
         <Button
+          href="/users/post"
           variant="contained"
           startIcon={<AddIcon />}
           sx={{
@@ -152,4 +153,4 @@ const UserList: React.FC = () => {
   );
 };
 
-export default UserList;
+export default GetUsers;
