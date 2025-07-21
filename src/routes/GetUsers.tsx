@@ -12,10 +12,13 @@ import { DataGrid } from "@mui/x-data-grid";
 import { getUserColumns } from "../components/GetUserColumns";
 import { useUserActionsMenu } from "../hooks/useUserMenu";
 import Fuse from "fuse.js";
+import { useUserStore } from "../store/userStore";
 
 const GetUsers: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const users = useUserStore((state) => state.users);
+  const loading = useUserStore((state) => state.loading);
+  const setUsers = useUserStore((state) => state.setUsers);
+  const setLoading = useUserStore((state) => state.setLoading);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -37,7 +40,7 @@ const GetUsers: React.FC = () => {
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("Error fetching users: ", err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [setUsers, setLoading]);
 
   if (loading)
     return (
