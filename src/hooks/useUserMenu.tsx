@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Menu, MenuItem } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const useUserActionsMenu = () => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedUserId, setSelectedUserId] = useState<null | number | string>(
     null
@@ -21,8 +23,10 @@ export const useUserActionsMenu = () => {
   };
 
   const handleEditUser = () => {
-    console.log("EDIT user:", selectedUserId);
-    handleMenuClose();
+    if (selectedUserId) {
+      navigate(`/users/${selectedUserId}`);
+      handleMenuClose();
+    }
   };
 
   const handleDeleteUser = () => {

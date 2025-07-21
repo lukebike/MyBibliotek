@@ -6,6 +6,7 @@ type UserState = {
   loading: boolean;
   setUsers: (users: User[]) => void;
   setLoading: (loading: boolean) => void;
+  updateUser: (updatedUser: User) => void;
 };
 
 export const useUserStore = create<UserState>((set) => ({
@@ -13,4 +14,10 @@ export const useUserStore = create<UserState>((set) => ({
   loading: true,
   setUsers: (users) => set({ users }),
   setLoading: (loading) => set({ loading }),
+  updateUser: (updatedUser) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.id === updatedUser.id ? updatedUser : user
+      ),
+    })),
 }));
