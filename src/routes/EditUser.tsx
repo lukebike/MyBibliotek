@@ -66,6 +66,7 @@ export default function EditUser() {
               message: "First name must be longer than 2 characters",
             },
           })}
+          slotProps={{ input: { autoComplete: "given-name" } }}
           error={!!errors.firstName}
           helperText={errors.firstName?.message}
         />
@@ -79,6 +80,7 @@ export default function EditUser() {
               message: "Last name must be longer than 2 characters",
             },
           })}
+          slotProps={{ input: { autoComplete: "family-name" } }}
           error={!!errors.lastName}
           helperText={errors.lastName?.message}
         />
@@ -93,6 +95,7 @@ export default function EditUser() {
               message: "Entered value does not match email format",
             },
           })}
+          slotProps={{ input: { autoComplete: "email" } }}
           error={!!errors.email}
           helperText={errors.email?.message}
         />
@@ -102,6 +105,7 @@ export default function EditUser() {
           {...register("currentPassword", {
             required: "Current password is required",
           })}
+          slotProps={{ input: { autoComplete: "current-password" } }}
           error={!!errors.currentPassword}
           helperText={errors.currentPassword?.message}
         />
@@ -120,6 +124,7 @@ export default function EditUser() {
                 "Password must contain uppercase, lowercase, number, and special character",
             },
           })}
+          slotProps={{ input: { autoComplete: "new-password" } }}
           error={!!errors.newPassword}
           helperText={errors.newPassword?.message}
         />

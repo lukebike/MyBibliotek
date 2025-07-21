@@ -49,6 +49,7 @@ export default function PostUsers() {
               message: "First name must be longer than 2 characters",
             },
           })}
+          slotProps={{ input: { autoComplete: "given-name" } }}
           error={!!errors.firstName}
           helperText={errors.firstName?.message}
         />
@@ -62,6 +63,7 @@ export default function PostUsers() {
               message: "Last name must be longer than 2 characters",
             },
           })}
+          slotProps={{ input: { autoComplete: "family-name" } }}
           error={!!errors.lastName}
           helperText={errors.lastName?.message}
         />
@@ -76,6 +78,7 @@ export default function PostUsers() {
               message: "Entered value does not match email format",
             },
           })}
+          slotProps={{ input: { autoComplete: "email" } }}
           error={!!errors.email}
           helperText={errors.email?.message}
         />
@@ -95,6 +98,7 @@ export default function PostUsers() {
                 "Password must contain uppercase, lowercase, number, and special character",
             },
           })}
+          slotProps={{ input: { autoComplete: "current-password" } }}
           error={!!errors.password}
           helperText={errors.password?.message}
         />
