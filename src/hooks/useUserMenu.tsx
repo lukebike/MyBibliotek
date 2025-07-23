@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../store/userStore";
 import api from "../api";
-import type { User } from "../types/User";
+import type { User } from "../types/User/User";
 
 export const useUserActionsMenu = () => {
   const navigate = useNavigate();
@@ -50,14 +50,18 @@ export const useUserActionsMenu = () => {
 
   const handleDeleteUser = () => {
     setDialogOpen(true);
-    handleMenuClose();
   };
 
   const confirmDeleteUser = async () => {
+    console.log("Delete clicked", selectedUserId);
     if (selectedUserId) {
-      await api.delete(`/users/${selectedUserId}`);
-      setUsers(users.filter((u: User) => u.id !== selectedUserId));
-      setDeleteSuccess(true);
+      try {
+        await api.delete(`/users/${selectedUserId}`);
+        setUsers(users.filter((u: User) => u.id !== selectedUserId));
+        setDeleteSuccess(true);
+      } catch (error) {
+        console.log("Could not remove user:", error);
+      }
     }
   };
 

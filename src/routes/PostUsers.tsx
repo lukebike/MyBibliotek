@@ -1,7 +1,7 @@
 import api from "../api";
 import { Box, TextField, Button, Paper, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { CreateUser } from "../types/CreateUser";
+import type { CreateUser } from "../types/User/CreateUser";
 
 export default function PostUsers() {
   const {
