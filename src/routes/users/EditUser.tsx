@@ -1,34 +1,51 @@
-import api from "../api";
-import { Box, TextField, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { CreateUser } from "../types/User/CreateUser";
+import api from "../../api";
+import { useNavigate, useParams } from "react-router";
+import { useUserStore } from "../../store/userStore";
+import type { EditUser } from "../../types/User/EditUser";
+import { useEffect } from "react";
 
-export default function PostUsers() {
+export default function EditUser() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const users = useUserStore((state) => state.users);
+  const updateUser = useUserStore((state) => state.updateUser);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<CreateUser>();
+  } = useForm<EditUser>();
 
-  const onSubmit: SubmitHandler<CreateUser> = async (data) => {
+  useEffect(() => {
+    const user = users.find((u) => String(u.id) === String(id));
+    if (user) {
+      reset(user);
+    } else if (id) {
+      api
+        .get<EditUser>(`/users/${id}`)
+        .then((response) => {
+          reset(response.data);
+        })
+        .catch((err) => console.error("Failed to fetch user:", err));
+    }
+  }, [id, users, reset]);
+
+  const onSubmit: SubmitHandler<EditUser> = async (data) => {
     try {
-      const response = await api.post("/users", data);
-      console.log(response);
-      window.alert(`User ${response.data.firstName} created successfully!`);
+      const response = await api.put(`/users/${id}`, data);
+      updateUser(response.data);
+      window.alert(`User updated successfully!`);
+      navigate("/users");
     } catch (error) {
-      if (typeof error === "object" && error !== null && "response" in error) {
-        // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
-        console.error("Failed to create user:", error.response.data.errors);
-      } else {
-        console.error("Failed to create user:", error);
-      }
+      console.error("Failed to edit user:", error);
     }
   };
-
   return (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
-        Create a New User
+        Edit User
       </Typography>
       <Box
         component="form"
@@ -83,10 +100,19 @@ export default function PostUsers() {
           helperText={errors.email?.message}
         />
         <TextField
-          label="Password"
+          label="Current Password"
           type="password"
-          {...register("password", {
-            required: "Password is required",
+          {...register("currentPassword", {
+            required: "Current password is required",
+          })}
+          slotProps={{ input: { autoComplete: "current-password" } }}
+          error={!!errors.currentPassword}
+          helperText={errors.currentPassword?.message}
+        />
+        <TextField
+          label="New Password (optional)"
+          type="password"
+          {...register("newPassword", {
             minLength: {
               value: 8,
               message: "Password must be at least 8 characters",
@@ -98,9 +124,9 @@ export default function PostUsers() {
                 "Password must contain uppercase, lowercase, number, and special character",
             },
           })}
-          slotProps={{ input: { autoComplete: "current-password" } }}
-          error={!!errors.password}
-          helperText={errors.password?.message}
+          slotProps={{ input: { autoComplete: "new-password" } }}
+          error={!!errors.newPassword}
+          helperText={errors.newPassword?.message}
         />
         <Button
           type="submit"
@@ -113,7 +139,7 @@ export default function PostUsers() {
             },
           }}
         >
-          Submit Form!
+          Update User!
         </Button>
       </Box>
     </Paper>

@@ -1,8 +1,6 @@
 import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-// We create a function that returns the columns array.
-// It accepts the menu handler as an argument so the column can trigger it.
 export const getUserColumns = (
   handleMenuOpen: (
     event: React.MouseEvent<HTMLElement>,

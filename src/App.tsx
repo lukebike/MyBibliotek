@@ -1,10 +1,11 @@
-import GetUsers from "./routes/GetUsers";
+import GetUsers from "./routes/users/GetUsers";
 import "./App.css";
 import { Box, Container } from "@mui/material";
 import ResponsiveAppBar from "./layout/ResponsiveAppBar";
-import PostUsers from "./routes/PostUsers";
+import PostUsers from "./routes/users/PostUsers";
 import { BrowserRouter, Route, Routes } from "react-router";
-import EditUser from "./routes/EditUser";
+import EditUser from "./routes/users/EditUser";
+import GetAuthors from "./routes/authors/GetAuthors";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               <Route path="users" element={<GetUsers />} />
               <Route path="users/post" element={<PostUsers />} />
               <Route path="users/:id" element={<EditUser />} />
+              <Route path="authors" element={<GetAuthors />} />
             </Routes>
           </div>
         </Container>

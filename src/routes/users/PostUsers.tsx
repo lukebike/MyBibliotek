@@ -1,51 +1,34 @@
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import api from "../../api";
+import { Box, TextField, Button, Paper, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import api from "../api";
-import { useNavigate, useParams } from "react-router";
-import { useUserStore } from "../store/userStore";
-import type { EditUser } from "../types/User/EditUser";
-import { useEffect } from "react";
+import type { CreateUser } from "../../types/User/CreateUser";
 
-export default function EditUser() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const users = useUserStore((state) => state.users);
-  const updateUser = useUserStore((state) => state.updateUser);
+export default function PostUsers() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
-  } = useForm<EditUser>();
+  } = useForm<CreateUser>();
 
-  useEffect(() => {
-    const user = users.find((u) => String(u.id) === String(id));
-    if (user) {
-      reset(user);
-    } else if (id) {
-      api
-        .get<EditUser>(`/users/${id}`)
-        .then((response) => {
-          reset(response.data);
-        })
-        .catch((err) => console.error("Failed to fetch user:", err));
-    }
-  }, [id, users, reset]);
-
-  const onSubmit: SubmitHandler<EditUser> = async (data) => {
+  const onSubmit: SubmitHandler<CreateUser> = async (data) => {
     try {
-      const response = await api.put(`/users/${id}`, data);
-      updateUser(response.data);
-      window.alert(`User updated successfully!`);
-      navigate("/users");
+      const response = await api.post("/users", data);
+      console.log(response);
+      window.alert(`User ${response.data.firstName} created successfully!`);
     } catch (error) {
-      console.error("Failed to edit user:", error);
+      if (typeof error === "object" && error !== null && "response" in error) {
+        // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
+        console.error("Failed to create user:", error.response.data.errors);
+      } else {
+        console.error("Failed to create user:", error);
+      }
     }
   };
+
   return (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
-        Edit User
+        Create a New User
       </Typography>
       <Box
         component="form"
@@ -100,19 +83,10 @@ export default function EditUser() {
           helperText={errors.email?.message}
         />
         <TextField
-          label="Current Password"
+          label="Password"
           type="password"
-          {...register("currentPassword", {
-            required: "Current password is required",
-          })}
-          slotProps={{ input: { autoComplete: "current-password" } }}
-          error={!!errors.currentPassword}
-          helperText={errors.currentPassword?.message}
-        />
-        <TextField
-          label="New Password (optional)"
-          type="password"
-          {...register("newPassword", {
+          {...register("password", {
+            required: "Password is required",
             minLength: {
               value: 8,
               message: "Password must be at least 8 characters",
@@ -124,9 +98,9 @@ export default function EditUser() {
                 "Password must contain uppercase, lowercase, number, and special character",
             },
           })}
-          slotProps={{ input: { autoComplete: "new-password" } }}
-          error={!!errors.newPassword}
-          helperText={errors.newPassword?.message}
+          slotProps={{ input: { autoComplete: "current-password" } }}
+          error={!!errors.password}
+          helperText={errors.password?.message}
         />
         <Button
           type="submit"
@@ -139,7 +113,7 @@ export default function EditUser() {
             },
           }}
         >
-          Update User!
+          Submit Form!
         </Button>
       </Box>
     </Paper>

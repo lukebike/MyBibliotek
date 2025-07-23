@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
-import api from "../api";
-import type { User } from "../types/User/User";
+import api from "../../api";
+import type { User } from "../../types/User/User";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { Paper, TextField } from "@mui/material";
-import { useDebounce } from "../hooks/useDebounce";
+import { useDebounce } from "../../hooks/useDebounce";
 import { DataGrid } from "@mui/x-data-grid";
-import { getUserColumns } from "../components/GetUserColumns";
-import { useUserActionsMenu } from "../hooks/useUserMenu";
+import { getUserColumns } from "../../components/GetUserColumns";
+import { useUserActionsMenu } from "../../hooks/useUserMenu";
 import Fuse from "fuse.js";
-import { useUserStore } from "../store/userStore";
+import { useUserStore } from "../../store/userStore";
 
 const GetUsers: React.FC = () => {
   const users = useUserStore((state) => state.users);
