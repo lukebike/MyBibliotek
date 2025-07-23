@@ -10,6 +10,7 @@ import { useUserActionsMenu } from "../../hooks/useUserMenu";
 export default function GetAuthors() {
   const [authors, setAuthors] = useState<Author[]>();
   const [searchTerm, setSearchTerm] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   useEffect(() => {
     api
       .get<Author[]>("/authors")
@@ -51,7 +52,12 @@ export default function GetAuthors() {
           rows={authors}
           columns={columns}
           pageSizeOptions={[5, 10, 25]}
-          initialState={{}}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: rowsPerPage },
+            },
+          }}
+          onPaginationModelChange={(model) => setRowsPerPage(model.pageSize)}
           disableRowSelectionOnClick
         />
       </Box>
