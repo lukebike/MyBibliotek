@@ -9,31 +9,31 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../store/userStore";
 import api from "../api";
-import type { User } from "../types/User/User";
+import type { Author } from "../types/Author/Author";
+import { useAuthorStore } from "../store/authorStore";
 
 export const useAuthorActionsMenu = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedUserId, setSelectedUserId] = useState<null | number | string>(
-    null
-  );
+  const [selectedAuthorId, setSelectedAuthorId] = useState<
+    null | number | string
+  >(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const users = useUserStore((state) => state.users);
+  const authors = useAuthorStore((state) => state.authors);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const setUsers = useUserStore((state) => state.setUsers);
+  const setAuthors = useAuthorStore((state) => state.setAuthors);
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
-    userId: number | string
+    authorId: number | string
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedUserId(userId);
+    setSelectedAuthorId(authorId);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedUserId(null);
+    setSelectedAuthorId(null);
   };
 
   const handleDialogClose = () => {
@@ -41,23 +41,25 @@ export const useAuthorActionsMenu = () => {
     setDeleteSuccess(false); // Reset dialog state
   };
 
-  const handleEditUser = () => {
-    if (selectedUserId) {
-      navigate(`/users/${selectedUserId}`);
+  const handleEditAuthor = () => {
+    if (selectedAuthorId) {
+      navigate(`/authors/${selectedAuthorId}`);
       handleMenuClose();
     }
   };
 
-  const handleDeleteUser = () => {
+  const handleDeleteAuthor = () => {
     setDialogOpen(true);
   };
 
-  const confirmDeleteUser = async () => {
-    console.log("Delete clicked", selectedUserId);
-    if (selectedUserId) {
+  const confirmDeleteAuthor = async () => {
+    console.log("Delete clicked", selectedAuthorId);
+    if (selectedAuthorId) {
       try {
-        await api.delete(`/users/${selectedUserId}`);
-        setUsers(users.filter((u: User) => u.id !== selectedUserId));
+        await api.delete(`/users/${selectedAuthorId}`);
+        setAuthors(
+          authors.filter((author: Author) => author.id !== selectedAuthorId)
+        );
         setDeleteSuccess(true);
       } catch (error) {
         console.log("Could not remove user:", error);
@@ -65,31 +67,31 @@ export const useAuthorActionsMenu = () => {
     }
   };
 
-  const UserMenu = () => (
+  const AuthorMenu = () => (
     <>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditUser} sx={{ color: "blue" }}>
-          Edit User
+        <MenuItem onClick={handleEditAuthor} sx={{ color: "blue" }}>
+          Edit Author
         </MenuItem>
         <MenuItem
           sx={{ color: "red", fontWeight: "500" }}
-          onClick={handleDeleteUser}
+          onClick={handleDeleteAuthor}
         >
-          Delete User
+          Delete Author
         </MenuItem>
       </Menu>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>
-          {deleteSuccess ? "User Deleted" : "Confirm Deletion"}
+          {deleteSuccess ? "Author Deleted" : "Confirm Deletion"}
         </DialogTitle>
         <DialogContent>
           {deleteSuccess
-            ? "User deleted successfully!"
-            : "Are you sure you want to delete this user? This action cannot be undone."}
+            ? "Author deleted successfully!"
+            : "Are you sure you want to delete this author? This action cannot be undone."}
         </DialogContent>
         <DialogActions>
           {deleteSuccess ? (
@@ -97,7 +99,7 @@ export const useAuthorActionsMenu = () => {
           ) : (
             <>
               <Button onClick={handleDialogClose}>Cancel</Button>
-              <Button color="error" onClick={confirmDeleteUser}>
+              <Button color="error" onClick={confirmDeleteAuthor}>
                 Delete
               </Button>
             </>
@@ -109,6 +111,6 @@ export const useAuthorActionsMenu = () => {
 
   return {
     handleMenuOpen,
-    UserMenu,
+    AuthorMenu,
   };
 };

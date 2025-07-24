@@ -5,9 +5,10 @@ import type { Author } from "../../types/Author/Author";
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { getAuthorColumns } from "../../components/GetAuthorColumns";
-import { useUserActionsMenu } from "../../hooks/useUserMenu";
+import { useAuthorActionsMenu } from "../../hooks/useAuthorMenu";
 
 export default function GetAuthors() {
+  const { handleMenuOpen, AuthorMenu } = useAuthorActionsMenu();
   const [authors, setAuthors] = useState<Author[]>();
   const [searchTerm, setSearchTerm] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -20,7 +21,7 @@ export default function GetAuthors() {
       .catch((err) => console.error("Error fetching authors", err));
   }, []);
 
-  const columns = getAuthorColumns(useUserActionsMenu);
+  const columns = getAuthorColumns(handleMenuOpen);
 
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
@@ -61,6 +62,7 @@ export default function GetAuthors() {
           disableRowSelectionOnClick
         />
       </Box>
+      <AuthorMenu />
     </Paper>
   );
 }
