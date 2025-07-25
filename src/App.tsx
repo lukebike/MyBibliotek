@@ -6,6 +6,7 @@ import PostUsers from "./routes/users/PostUsers";
 import { BrowserRouter, Route, Routes } from "react-router";
 import EditUser from "./routes/users/EditUser";
 import GetAuthors from "./routes/authors/GetAuthors";
+import PostAuthors from "./routes/authors/PostAuthors";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               <Route path="users/post" element={<PostUsers />} />
               <Route path="users/:id" element={<EditUser />} />
               <Route path="authors" element={<GetAuthors />} />
+              <Route path="authors/post" element={<PostAuthors />} />
             </Routes>
           </div>
         </Container>
