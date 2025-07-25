@@ -56,7 +56,7 @@ export const useAuthorActionsMenu = () => {
     console.log("Delete clicked", selectedAuthorId);
     if (selectedAuthorId) {
       try {
-        await api.delete(`/users/${selectedAuthorId}`);
+        await api.delete(`/authors/${selectedAuthorId}`);
         setAuthors(
           authors.filter((author: Author) => author.id !== selectedAuthorId)
         );
