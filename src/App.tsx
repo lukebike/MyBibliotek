@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import EditUser from "./routes/users/EditUser";
 import GetAuthors from "./routes/authors/GetAuthors";
 import PostAuthors from "./routes/authors/PostAuthors";
+import GetBooks from "./routes/books/GetBooks";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path="users/:id" element={<EditUser />} />
               <Route path="authors" element={<GetAuthors />} />
               <Route path="authors/post" element={<PostAuthors />} />
+              <Route path="books" element={<GetBooks />} />
             </Routes>
           </div>
         </Container>

@@ -9,16 +9,23 @@ import AddIcon from "@mui/icons-material/Add";
 import { Paper, TextField } from "@mui/material";
 import { useDebounce } from "../../hooks/useDebounce";
 import { DataGrid } from "@mui/x-data-grid";
-import { getUserColumns } from "../../components/GetUserColumns";
-import { useUserActionsMenu } from "../../hooks/useUserMenu";
+
 import Fuse from "fuse.js";
-import { useUserStore } from "../../store/userStore";
+import { useBookActionsMenu } from "../../hooks/useBookMenu";
+import { getBookColumns } from "../../components/GetBookColumns";
+import type { Book } from "../../types/Book/Book";
+import { useBookStore } from "../../store/bookStore";
 
 const GetBooks: React.FC = () => {
-  const users = useBookStore((state) => state.books);
+  const books = useBookStore((state) => state.books);
   const loading = useBookStore((state) => state.loading);
   const setBooks = useBookStore((state) => state.setBooks);
+  const [totalCount, setTotalCount] = useState(0);
   const setLoading = useBookStore((state) => state.setLoading);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 5,
+  });
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -26,21 +33,30 @@ const GetBooks: React.FC = () => {
   const fuse = useMemo(() => {
     const fuseOptions = {
       threshold: 0.3,
-      keys: ["firstName", "lastName", "email"],
+      keys: ["title", "publicationYear"],
     };
-    return new Fuse(users, fuseOptions);
-  }, [users]);
+    return new Fuse(books, fuseOptions);
+  }, [books]);
 
-  const { handleMenuOpen, UserMenu } = useUserActionsMenu();
-  const columns = getUserColumns(handleMenuOpen);
+  const { handleMenuOpen, BookMenu } = useBookActionsMenu();
+  const columns = getBookColumns(handleMenuOpen);
 
   useEffect(() => {
     api
-      .get<User[]>("/users")
-      .then((res) => setUsers(res.data))
-      .catch((err) => console.error("Error fetching users: ", err))
+      .get("/books", {
+        params: {
+          pageNumber: paginationModel.page,
+          pageSize: paginationModel.pageSize,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setBooks(res.data.books);
+        setTotalCount(res.data.totalCount);
+      })
+      .catch((err) => console.error("Error fetching books: ", err))
       .finally(() => setLoading(false));
-  }, [setUsers, setLoading]);
+  }, [paginationModel, setBooks, setLoading]);
 
   if (loading)
     return (
@@ -55,16 +71,16 @@ const GetBooks: React.FC = () => {
       </Box>
     );
 
-  const filteredUsers = debouncedSearchTerm.trim()
+  const filteredBooks = debouncedSearchTerm.trim()
     ? fuse.search(debouncedSearchTerm).map((result) => result.item)
-    : users;
+    : books;
 
   return (
     <Paper elevation={3} sx={{ p: 3 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-        <Typography variant="h4">Manage Users</Typography>
+        <Typography variant="h4">Manage Books</Typography>
         <Button
-          href="/users/post"
+          href="/books/post"
           variant="contained"
           startIcon={<AddIcon />}
           sx={{
@@ -74,7 +90,7 @@ const GetBooks: React.FC = () => {
             },
           }}
         >
-          Add User
+          Add Book
         </Button>
       </Box>
       <TextField
@@ -86,22 +102,24 @@ const GetBooks: React.FC = () => {
       />
       <Box sx={{ height: "100%", width: "100%" }}>
         <DataGrid
-          rows={filteredUsers}
+          rows={filteredBooks}
           columns={columns}
           loading={loading}
           pageSizeOptions={[5, 10, 25]}
           initialState={{
             pagination: {
-              paginationModel: { pageSize: rowsPerPage },
+              paginationModel: paginationModel,
             },
           }}
-          onPaginationModelChange={(model) => setRowsPerPage(model.pageSize)}
+          onPaginationModelChange={setPaginationModel}
+          paginationMode="server"
+          rowCount={totalCount}
           disableRowSelectionOnClick
         />
       </Box>
-      <UserMenu />
+      <BookMenu />
     </Paper>
   );
 };
 
-export default GetUsers;
+export default GetBooks;
