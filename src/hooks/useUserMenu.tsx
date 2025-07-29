@@ -72,11 +72,11 @@ export const useUserActionsMenu = () => {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditUser} sx={{ color: "blue" }}>
+        <MenuItem onClick={handleEditUser} sx={{ color: "#168aad" }}>
           Edit User
         </MenuItem>
         <MenuItem
-          sx={{ color: "red", fontWeight: "500" }}
+          sx={{ color: "#bc4749", fontWeight: "500" }}
           onClick={handleDeleteUser}
         >
           Delete User

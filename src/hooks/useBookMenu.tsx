@@ -72,11 +72,11 @@ export const useBookActionsMenu = () => {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditBook} sx={{ color: "blue" }}>
+        <MenuItem onClick={handleEditBook} sx={{ color: "#168aad" }}>
           Edit Book
         </MenuItem>
         <MenuItem
-          sx={{ color: "red", fontWeight: "500" }}
+          sx={{ color: "#bc4749", fontWeight: "500" }}
           onClick={handleDeleteBook}
         >
           Delete Book

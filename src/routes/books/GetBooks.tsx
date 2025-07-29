@@ -76,8 +76,17 @@ const GetBooks: React.FC = () => {
     : books;
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+    <Paper
+      elevation={3}
+      sx={{ p: 3, backgroundColor: "#121212", color: "#fff" }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          mb: 3,
+        }}
+      >
         <Typography variant="h4">Manage Books</Typography>
         <Button
           href="/books/post"
@@ -102,6 +111,7 @@ const GetBooks: React.FC = () => {
       />
       <Box sx={{ height: "100%", width: "100%" }}>
         <DataGrid
+          sx={{ backgroundColor: "#121212", color: "#fff" }}
           rows={filteredBooks}
           columns={columns}
           loading={loading}

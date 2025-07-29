@@ -74,11 +74,11 @@ export const useAuthorActionsMenu = () => {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditAuthor} sx={{ color: "blue" }}>
+        <MenuItem onClick={handleEditAuthor} sx={{ color: "#168aad" }}>
           Edit Author
         </MenuItem>
         <MenuItem
-          sx={{ color: "red", fontWeight: "500" }}
+          sx={{ color: "#bc4749", fontWeight: "500" }}
           onClick={handleDeleteAuthor}
         >
           Delete Author

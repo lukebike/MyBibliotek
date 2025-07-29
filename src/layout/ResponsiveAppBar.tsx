@@ -60,14 +60,18 @@ export default function DrawerAppBar(props: Props) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <Container maxWidth="lg">
-        <AppBar component="nav" color="inherit">
+        <AppBar
+          component="nav"
+          color="inherit" // You can keep this or set to "transparent"
+          sx={{ backgroundColor: "#121212" }}
+        >
           <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" } }}
+              sx={{ mr: 2, display: { sm: "none" }, color: "#fff" }}
             >
               <MenuIcon />
             </IconButton>
@@ -77,6 +81,8 @@ export default function DrawerAppBar(props: Props) {
               sx={{
                 flexGrow: 1,
                 display: { xs: "none", sm: "block", fontWeight: "500" },
+                color: "#fff",
+                fontWeight: "500",
               }}
             >
               Library System
@@ -87,7 +93,11 @@ export default function DrawerAppBar(props: Props) {
                   component={Link}
                   to={`/${item.toLowerCase()}`}
                   key={item}
-                  sx={{ color: "inherit", textTransform: "none" }}
+                  sx={{
+                    color: "#fff",
+                    textTransform: "none",
+                    fontWeight: "400",
+                  }}
                 >
                   {item}
                 </Button>
