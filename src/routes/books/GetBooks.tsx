@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "../../api";
-import type { User } from "../../types/User/User";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -13,7 +12,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Fuse from "fuse.js";
 import { useBookActionsMenu } from "../../hooks/useBookMenu";
 import { getBookColumns } from "../../components/GetBookColumns";
-import type { Book } from "../../types/Book/Book";
+
 import { useBookStore } from "../../store/bookStore";
 
 const GetBooks: React.FC = () => {
@@ -26,7 +25,7 @@ const GetBooks: React.FC = () => {
     page: 0,
     pageSize: 5,
   });
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
