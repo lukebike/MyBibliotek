@@ -4,7 +4,7 @@ A full-stack library management system with a React + TypeScript + Vite frontend
 
 ## Features
 
-- User, Author, and Book CRUD operations
+- User, Author, Book, and Loan CRUD operations
 - Material UI (MUI) for modern UI components
 - Zustand for state management
 - Axios for API requests
