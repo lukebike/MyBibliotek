@@ -9,6 +9,7 @@ import GetAuthors from "./routes/authors/GetAuthors";
 import { darkTheme } from "./theme/themeStyles";
 import PostAuthors from "./routes/authors/PostAuthors";
 import GetBooks from "./routes/books/GetBooks";
+import PostBooks from "./routes/books/PostBooks";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
                 <Route path="authors" element={<GetAuthors />} />
                 <Route path="authors/post" element={<PostAuthors />} />
                 <Route path="books" element={<GetBooks />} />
+                <Route path="books/post" element={<PostBooks />} />
               </Routes>
             </div>
           </Container>

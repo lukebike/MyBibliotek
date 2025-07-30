@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { CreateBook } from "../../types/Book/CreateBook";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthorStore } from "../../store/authorStore";
 
 export default function PostBooks() {
@@ -27,6 +27,11 @@ export default function PostBooks() {
   );
 
   const authors = useAuthorStore((state) => state.authors);
+  const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
+
+  useEffect(() => {
+    fetchAuthors();
+  }, [fetchAuthors]);
 
   const onSubmit: SubmitHandler<CreateBook> = async (data) => {
     try {

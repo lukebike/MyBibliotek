@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { Author } from "../types/Author/Author";
+import api from "../api";
 
 type AuthorState = {
   authors: Author[];
@@ -7,6 +8,7 @@ type AuthorState = {
   setAuthors: (authors: Author[]) => void;
   setLoading: (loading: boolean) => void;
   updateAuthor: (updatedAuthor: Author) => void;
+  fetchAuthors: () => Promise<void>;
 };
 
 export const useAuthorStore = create<AuthorState>((set) => ({
@@ -20,4 +22,14 @@ export const useAuthorStore = create<AuthorState>((set) => ({
         author.id === updatedAuthor.id ? updatedAuthor : author
       ),
     })),
+  fetchAuthors: async () => {
+    set({ loading: true });
+    try {
+      const response = await api.get<Author[]>("/authors");
+      set({ authors: response.data, loading: false });
+    } catch (err) {
+      set({ loading: false });
+      console.error("Failed to fetch authors", err);
+    }
+  },
 }));
