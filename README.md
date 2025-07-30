@@ -1,69 +1,87 @@
-# React + TypeScript + Vite
+# Library System Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack library management system with a React + TypeScript + Vite frontend and a Spring Boot backend.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User, Author, and Book CRUD operations
+- Material UI (MUI) for modern UI components
+- Zustand for state management
+- Axios for API requests
+- React Router for navigation
+- Fuse.js for fast fuzzy searching
+- Form validation with React Hook Form
 
-## Expanding the ESLint configuration
+## In Progress
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Integrating the loan system into the frontend**
+- **Dashboard to display all library information**
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Project Structure
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+  api.ts                  # Axios API instance
+  App.tsx                 # Main app component and routing
+  components/             # DataGrid column definitions
+  hooks/                  # Custom hooks (menus, debounce, etc.)
+  layout/                 # AppBar and layout components
+  routes/                 # Page components for users, authors, books
+  store/                  # Zustand stores for state management
+  theme/                  # MUI theme customization
+  types/                  # TypeScript types for domain models
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js (v18+ recommended)
+- npm or yarn
+- Spring Boot backend running at `http://localhost:8080`
+
+### Install dependencies
+
+```sh
+npm install
+# or
+yarn install
 ```
+
+### Run the frontend
+
+```sh
+npm run dev
+# or
+yarn dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Build for production
+
+```sh
+npm run build
+```
+
+### Lint
+
+```sh
+npm run lint
+```
+
+## API Configuration
+
+The frontend expects the backend API at `http://localhost:8080`.  
+You can change this in `src/api.ts`.
+
+## Tech Stack
+
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Material UI](https://mui.com/)
+- [Zustand](https://zustand-demo.pmnd.rs/)
+- [Axios](https://axios-http.com/)
+- [React Hook Form](https://react-hook-form.com/)
+- [Fuse.js](https://fusejs.io/)

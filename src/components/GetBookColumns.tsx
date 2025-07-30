@@ -1,6 +1,5 @@
 import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import type { Author } from "../types/Author/Author";
 
 export const getBookColumns = (
   handleMenuOpen: (
