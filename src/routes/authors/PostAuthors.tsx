@@ -1,7 +1,16 @@
 import api from "../../api";
-import { Box, TextField, Button, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Paper,
+  Typography,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { CreateAuthor } from "../../types/Author/CreateAuthor";
+import { useState } from "react";
 
 export default function PostUsers() {
   const {
@@ -9,13 +18,22 @@ export default function PostUsers() {
     handleSubmit,
     formState: { errors },
   } = useForm<CreateAuthor>();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   const onSubmit: SubmitHandler<CreateAuthor> = async (data) => {
     try {
       const response = await api.post("/authors", data);
-      console.log(response);
-      window.alert(`Author ${response.data.firstName} created successfully!`);
+      setSnackbarMsg(`Author ${response.data.firstName} created successfully!`);
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     } catch (error) {
+      setSnackbarMsg("Failed to create author.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
       if (typeof error === "object" && error !== null && "response" in error) {
         // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
         console.error("Failed to create author:", error.response.data.errors);
@@ -95,6 +113,20 @@ export default function PostUsers() {
           Submit Form!
         </Button>
       </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 }
