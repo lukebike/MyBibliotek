@@ -1,4 +1,4 @@
-export interface EditUser {
+export interface UpdateUser {
   firstName: string;
   lastName: string;
   email: string;

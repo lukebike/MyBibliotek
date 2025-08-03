@@ -4,9 +4,9 @@ import api from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useAuthorStore } from "../../store/authorStore";
-import type { EditAuthor } from "../../types/Author/EditAuthor";
+import type { UpdateAuthor } from "../../types/Author/UpdateAuthor";
 
-export default function EditUser() {
+export default function UpdateAuthor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const authors = useAuthorStore((state) => state.authors);
@@ -16,7 +16,7 @@ export default function EditUser() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<EditAuthor>();
+  } = useForm<UpdateAuthor>();
 
   useEffect(() => {
     const author = authors.find((author) => String(author.id) === String(id));
@@ -24,7 +24,7 @@ export default function EditUser() {
       reset(author);
     } else if (id) {
       api
-        .get<EditAuthor>(`/authors/${id}`)
+        .get<UpdateAuthor>(`/authors/${id}`)
         .then((response) => {
           reset(response.data);
         })
@@ -32,20 +32,20 @@ export default function EditUser() {
     }
   }, [id, authors, reset]);
 
-  const onSubmit: SubmitHandler<EditAuthor> = async (data) => {
+  const onSubmit: SubmitHandler<UpdateAuthor> = async (data) => {
     try {
       const response = await api.put(`/author/${id}`, data);
       updateAuthor(response.data);
       window.alert(`Author updated successfully!`);
       navigate("/authors");
     } catch (error) {
-      console.error("Failed to edit author:", error);
+      console.error("Failed to update author:", error);
     }
   };
   return (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
-        Edit Author
+        Update Author
       </Typography>
       <Box
         component="form"

@@ -3,10 +3,10 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import api from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { useUserStore } from "../../store/userStore";
-import type { EditUser } from "../../types/User/EditUser";
+import type { UpdateUser } from "../../types/User/UpdateUser";
 import { useEffect } from "react";
 
-export default function EditUser() {
+export default function UpdateUser() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const users = useUserStore((state) => state.users);
@@ -16,7 +16,7 @@ export default function EditUser() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<EditUser>();
+  } = useForm<UpdateUser>();
 
   useEffect(() => {
     const user = users.find((u) => String(u.id) === String(id));
@@ -24,7 +24,7 @@ export default function EditUser() {
       reset(user);
     } else if (id) {
       api
-        .get<EditUser>(`/users/${id}`)
+        .get<UpdateUser>(`/users/${id}`)
         .then((response) => {
           reset(response.data);
         })
@@ -32,20 +32,20 @@ export default function EditUser() {
     }
   }, [id, users, reset]);
 
-  const onSubmit: SubmitHandler<EditUser> = async (data) => {
+  const onSubmit: SubmitHandler<UpdateUser> = async (data) => {
     try {
       const response = await api.put(`/users/${id}`, data);
       updateUser(response.data);
       window.alert(`User updated successfully!`);
       navigate("/users");
     } catch (error) {
-      console.error("Failed to edit user:", error);
+      console.error("Failed to update user:", error);
     }
   };
   return (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
-        Edit User
+        Update User
       </Typography>
       <Box
         component="form"

@@ -1,3 +1,3 @@
 import type { CreateAuthor } from "./CreateAuthor";
 
-export type EditAuthor = CreateAuthor;
+export type UpdateAuthor = CreateAuthor;
