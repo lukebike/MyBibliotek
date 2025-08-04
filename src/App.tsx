@@ -12,6 +12,7 @@ import GetBooks from "./routes/books/GetBooks";
 import PostBooks from "./routes/books/PostBooks";
 import UpdateBook from "./routes/books/UpdateBook";
 import UpdateAuthor from "./routes/authors/UpdateAuthor";
+import GetLoans from "./routes/loans/GetLoans";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                 <Route path="books" element={<GetBooks />} />
                 <Route path="books/post" element={<PostBooks />} />
                 <Route path="books/:id" element={<UpdateBook />} />
+                <Route path="loans" element={<GetLoans />} />
               </Routes>
             </div>
           </Container>

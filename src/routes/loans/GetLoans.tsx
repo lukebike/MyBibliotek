@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
 
-import { useLoanActionsMenu } from "../../hooks/menus/useBookMenu";
-import { getLoanColumns } from "../../components/GetBookColumns";
+import { useLoanActionsMenu } from "../../hooks/menus/useLoanMenu";
+import { getLoanColumns } from "../../components/GetLoanColumns";
 
-import { useLoanStore } from "../../store/bookStore";
+import { useLoanStore } from "../../store/loanStore";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
 import { DataGridLayout } from "../../components/DataGridLayout";
 
 const GetBooks: React.FC = () => {
-  const loan = useLoanStore((state) => state.loans);
+  const loans = useLoanStore((state) => state.loans);
   const loading = useLoanStore((state) => state.loading);
   const setLoans = useLoanStore((state) => state.setLoans);
   const setLoading = useLoanStore((state) => state.setLoading);
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { handleMenuOpen, BookMenu } = useLoanActionsMenu();
+  const { handleMenuOpen, LoanMenu } = useLoanActionsMenu();
   const columns = getLoanColumns(handleMenuOpen);
 
   useEffect(() => {
@@ -32,21 +32,21 @@ const GetBooks: React.FC = () => {
       .finally(() => setLoading(false));
   }, [setLoans, setLoading]);
 
-  const filteredBooks = useSearch(loans, searchTerm, fuseConfigs.loans);
+  const filteredLoans = useSearch(loans, searchTerm, fuseConfigs.loans);
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <DataGridLayout
-      title="Manage Books"
-      addUrl="/books/post"
+      title="Manage Loans"
+      addUrl="/loans/post"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
-      rows={filteredBooks}
+      rows={filteredLoans}
       columns={columns}
       loading={loading}
     >
-      <BookMenu />
+      <LoanMenu />
     </DataGridLayout>
   );
 };

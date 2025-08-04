@@ -5,13 +5,14 @@ import AddIcon from "@mui/icons-material/Add";
 import type { User } from "../types/users/User";
 import type { Book } from "../types/books/Book";
 import type { Author } from "../types/authors/Author";
+import type { Loan } from "../types/loans/Loan";
 
 interface DataGridLayoutProps {
   title: string;
   addUrl: string;
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  rows: User[] | Book[] | Author[];
+  rows: User[] | Book[] | Author[] | Loan[];
   columns: GridColDef[];
   loading: boolean;
   totalCount?: number;
