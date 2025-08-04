@@ -9,7 +9,7 @@ import {
   Snackbar,
 } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { CreateUser } from "../../types/User/CreateUser";
+import type { CreateUser } from "../../types/users/CreateUser";
 import { useState } from "react";
 
 export default function PostUsers() {

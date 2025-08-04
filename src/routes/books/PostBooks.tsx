@@ -9,7 +9,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { CreateBook } from "../../types/Book/CreateBook";
+import type { CreateBook } from "../../types/books/CreateBook";
 import { useEffect, useState } from "react";
 import { useAuthorStore } from "../../store/authorStore";
 

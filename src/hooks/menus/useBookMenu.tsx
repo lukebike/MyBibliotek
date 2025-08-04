@@ -9,31 +9,31 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../store/userStore";
-import api from "../api";
-import type { User } from "../types/User/User";
+import api from "../../api";
+import type { Book } from "../../types/books/Book";
+import { useBookStore } from "../../store/bookStore";
 
-export const useUserActionsMenu = () => {
+export const useBookActionsMenu = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedUserId, setSelectedUserId] = useState<null | number | string>(
+  const [selectedBookId, setSelectedBookId] = useState<null | number | string>(
     null
   );
   const [dialogOpen, setDialogOpen] = useState(false);
-  const users = useUserStore((state) => state.users);
+  const books = useBookStore((state) => state.books);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const setUsers = useUserStore((state) => state.setUsers);
+  const setBooks = useBookStore((state) => state.setBooks);
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
-    userId: number | string
+    bookId: number | string
   ) => {
     setAnchorEl(event.currentTarget);
-    setSelectedUserId(userId);
+    setSelectedBookId(bookId);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedUserId(null);
+    setSelectedBookId(null);
   };
 
   const handleDialogClose = () => {
@@ -41,23 +41,22 @@ export const useUserActionsMenu = () => {
     setDeleteSuccess(false); // Reset dialog state
   };
 
-  const handleEditUser = () => {
-    if (selectedUserId) {
-      navigate(`/users/${selectedUserId}`);
+  const handleEditBook = () => {
+    if (selectedBookId) {
+      navigate(`/books/${selectedBookId}`);
       handleMenuClose();
     }
   };
 
-  const handleDeleteUser = () => {
+  const handleDeleteBook = () => {
     setDialogOpen(true);
   };
 
-  const confirmDeleteUser = async () => {
-    console.log("Delete clicked", selectedUserId);
-    if (selectedUserId) {
+  const confirmDeleteBook = async () => {
+    if (selectedBookId) {
       try {
-        await api.delete(`/users/${selectedUserId}`);
-        setUsers(users.filter((u: User) => u.id !== selectedUserId));
+        await api.delete(`/authors/${selectedBookId}`);
+        setBooks(books.filter((book: Book) => book.id !== selectedBookId));
         setDeleteSuccess(true);
       } catch (error) {
         console.log("Could not remove user:", error);
@@ -65,31 +64,31 @@ export const useUserActionsMenu = () => {
     }
   };
 
-  const UserMenu = () => (
+  const BookMenu = () => (
     <>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditUser} sx={{ color: "#168aad" }}>
-          Edit User
+        <MenuItem onClick={handleEditBook} sx={{ color: "#168aad" }}>
+          Edit Book
         </MenuItem>
         <MenuItem
           sx={{ color: "#bc4749", fontWeight: "500" }}
-          onClick={handleDeleteUser}
+          onClick={handleDeleteBook}
         >
-          Delete User
+          Delete Book
         </MenuItem>
       </Menu>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>
-          {deleteSuccess ? "User Deleted" : "Confirm Deletion"}
+          {deleteSuccess ? "Book Deleted" : "Confirm Deletion"}
         </DialogTitle>
         <DialogContent>
           {deleteSuccess
-            ? "User deleted successfully!"
-            : "Are you sure you want to delete this user? This action cannot be undone."}
+            ? "Book deleted successfully!"
+            : "Are you sure you want to delete this book? This action cannot be undone."}
         </DialogContent>
         <DialogActions>
           {deleteSuccess ? (
@@ -97,7 +96,7 @@ export const useUserActionsMenu = () => {
           ) : (
             <>
               <Button onClick={handleDialogClose}>Cancel</Button>
-              <Button color="error" onClick={confirmDeleteUser}>
+              <Button color="error" onClick={confirmDeleteBook}>
                 Delete
               </Button>
             </>
@@ -109,6 +108,6 @@ export const useUserActionsMenu = () => {
 
   return {
     handleMenuOpen,
-    UserMenu,
+    BookMenu,
   };
 };

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
-import type { Author } from "../../types/Author/Author";
+import type { Author } from "../../types/authors/Author";
 import { getAuthorColumns } from "../../components/GetAuthorColumns";
-import { useAuthorActionsMenu } from "../../hooks/useAuthorMenu";
+import { useAuthorActionsMenu } from "../../hooks/menus/useAuthorMenu";
 import { DataGridLayout } from "../../components/DataGridLayout";
 import { useSearch } from "../../hooks/useSearch";
 import { useAuthorStore } from "../../store/authorStore";

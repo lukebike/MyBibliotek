@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Author } from "../types/Author/Author";
+import type { Author } from "../types/authors/Author";
 import api from "../api";
 
 type AuthorState = {

@@ -3,7 +3,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import api from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { useUserStore } from "../../store/userStore";
-import type { UpdateUser } from "../../types/User/UpdateUser";
+import type { UpdateUser } from "../../types/users/UpdateUser";
 import { useEffect } from "react";
 
 export default function UpdateUser() {

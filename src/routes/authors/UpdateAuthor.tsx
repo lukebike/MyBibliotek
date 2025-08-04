@@ -4,7 +4,7 @@ import api from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useAuthorStore } from "../../store/authorStore";
-import type { UpdateAuthor } from "../../types/Author/UpdateAuthor";
+import type { UpdateAuthor } from "../../types/authors/UpdateAuthor";
 
 export default function UpdateAuthor() {
   const { id } = useParams<{ id: string }>();

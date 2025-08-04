@@ -3,7 +3,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import api from "../../api";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
-import type { UpdateBook } from "../../types/Book/UpdateBook";
+import type { UpdateBook } from "../../types/books/UpdateBook";
 import { useBookStore } from "../../store/bookStore";
 import { useAuthorStore } from "../../store/authorStore";
 

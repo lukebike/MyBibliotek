@@ -1,4 +1,4 @@
-import type { Author } from "../Author/Author";
+import type { Author } from "../authors/Author";
 
 export interface Book {
   id: number;

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
-import type { User } from "../../types/User/User";
+import type { User } from "../../types/users/User";
 import { getUserColumns } from "../../components/GetUserColumns";
-import { useUserActionsMenu } from "../../hooks/useUserMenu";
+import { useUserActionsMenu } from "../../hooks/menus/useUserMenu";
 import { useUserStore } from "../../store/userStore";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Book } from "../types/Book/Book";
+import type { Book } from "../types/books/Book";
 
 type BookState = {
   books: Book[];

@@ -9,7 +9,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { CreateAuthor } from "../../types/Author/CreateAuthor";
+import type { CreateAuthor } from "../../types/authors/CreateAuthor";
 import { useState } from "react";
 
 export default function PostUsers() {

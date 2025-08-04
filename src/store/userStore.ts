@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { User } from "../types/User/User";
+import type { User } from "../types/users/User";
 
 type UserState = {
   users: User[];

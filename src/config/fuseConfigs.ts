@@ -1,7 +1,7 @@
 import type { IFuseOptions } from "fuse.js";
-import type { User } from "../types/User/User";
-import type { Book } from "../types/Book/Book";
-import type { Author } from "../types/Author/Author";
+import type { User } from "../types/users/User";
+import type { Book } from "../types/books/Book";
+import type { Author } from "../types/authors/Author";
 
 export const fuseConfigs = {
   users: {
