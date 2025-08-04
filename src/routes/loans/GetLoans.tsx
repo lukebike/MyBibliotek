@@ -1,42 +1,38 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
 
-import { useBookActionsMenu } from "../../hooks/menus/useBookMenu";
-import { getBookColumns } from "../../components/GetBookColumns";
+import { useLoanActionsMenu } from "../../hooks/menus/useBookMenu";
+import { getLoanColumns } from "../../components/GetBookColumns";
 
-import { useBookStore } from "../../store/bookStore";
+import { useLoanStore } from "../../store/bookStore";
 import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
 import { DataGridLayout } from "../../components/DataGridLayout";
 
 const GetBooks: React.FC = () => {
-  const books = useBookStore((state) => state.books);
-  const loading = useBookStore((state) => state.loading);
-  const setBooks = useBookStore((state) => state.setBooks);
-  const setLoading = useBookStore((state) => state.setLoading);
+  const loan = useLoanStore((state) => state.loans);
+  const loading = useLoanStore((state) => state.loading);
+  const setLoans = useLoanStore((state) => state.setLoans);
+  const setLoading = useLoanStore((state) => state.setLoading);
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { handleMenuOpen, BookMenu } = useBookActionsMenu();
-  const columns = getBookColumns(handleMenuOpen);
+  const { handleMenuOpen, BookMenu } = useLoanActionsMenu();
+  const columns = getLoanColumns(handleMenuOpen);
 
   useEffect(() => {
     api
-      .get("/books", {
-        params: {
-          pageNumber: 0,
-          pageSize: 100,
-        },
-      })
+      .get("/loans", {})
       .then((res) => {
-        setBooks(res.data.books);
+        console.log(res.data);
+        setLoans(res.data);
       })
-      .catch((err) => console.error("Error fetching books: ", err))
+      .catch((err) => console.error("Error fetching loans: ", err))
       .finally(() => setLoading(false));
-  }, [setBooks, setLoading]);
+  }, [setLoans, setLoading]);
 
-  const filteredBooks = useSearch(books, searchTerm, fuseConfigs.books);
+  const filteredBooks = useSearch(loans, searchTerm, fuseConfigs.loans);
 
   if (loading) return <LoadingSpinner />;
 

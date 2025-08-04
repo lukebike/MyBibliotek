@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { User } from "../types/users/User";
+import api from "../api";
 
 type UserState = {
   users: User[];
@@ -7,6 +8,7 @@ type UserState = {
   setUsers: (users: User[]) => void;
   setLoading: (loading: boolean) => void;
   updateUser: (updatedUser: User) => void;
+  fetchUsers: () => Promise<void>;
 };
 
 export const useUserStore = create<UserState>((set) => ({
@@ -20,4 +22,14 @@ export const useUserStore = create<UserState>((set) => ({
         user.id === updatedUser.id ? updatedUser : user
       ),
     })),
+  fetchUsers: async () => {
+    set({ loading: true });
+    try {
+      const response = await api.get<User[]>("/users");
+      set({ users: response.data, loading: false });
+    } catch (err) {
+      set({ loading: false });
+      console.error("Failed to fetch loans", err);
+    }
+  },
 }));

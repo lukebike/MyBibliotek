@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { Book } from "../types/books/Book";
+import api from "../api";
 
 type BookState = {
   books: Book[];
@@ -7,6 +8,7 @@ type BookState = {
   setBooks: (books: Book[]) => void;
   setLoading: (loading: boolean) => void;
   updateBook: (updatedBook: Book) => void;
+  fetchBooks: () => Promise<void>;
 };
 
 export const useBookStore = create<BookState>((set) => ({
@@ -20,4 +22,14 @@ export const useBookStore = create<BookState>((set) => ({
         book.id === updatedBook.id ? updatedBook : book
       ),
     })),
+  fetchBooks: async () => {
+    set({ loading: true });
+    try {
+      const response = await api.get<Book[]>("/books");
+      set({ books: response.data, loading: false });
+    } catch (err) {
+      set({ loading: false });
+      console.error("Failed to fetch loans", err);
+    }
+  },
 }));
