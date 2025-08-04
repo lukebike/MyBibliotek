@@ -15,6 +15,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Container } from "@mui/material";
 import { Link } from "react-router";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import { useThemeContext } from "../hooks/useThemeContext";
 
 interface Props {
   /**
@@ -30,6 +33,7 @@ const navItems = ["Dashboard", "Users", "Authors", "Books", "Loans"];
 export default function DrawerAppBar(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { isDark, toggleTheme } = useThemeContext();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -38,17 +42,29 @@ export default function DrawerAppBar(props: Props) {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        MUI
+        Library System
       </Typography>
       <Divider />
       <List>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
+            <ListItemButton
+              component={Link}
+              to={`/${item.toLowerCase()}`}
+              sx={{ textAlign: "center" }}
+            >
               <ListItemText primary={item} />
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem disablePadding>
+          <ListItemButton onClick={toggleTheme} sx={{ textAlign: "center" }}>
+            <ListItemText
+              primary={isDark ? "Light Mode" : "Dark Mode"}
+              secondary={isDark ? <LightModeIcon /> : <DarkModeIcon />}
+            />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
@@ -62,8 +78,11 @@ export default function DrawerAppBar(props: Props) {
       <Container maxWidth="lg">
         <AppBar
           component="nav"
-          color="inherit" // You can keep this or set to "transparent"
-          sx={{ backgroundColor: "#121212" }}
+          color="inherit"
+          sx={{
+            backgroundColor: isDark ? "#121212" : "#FFFFFF",
+            borderBottom: isDark ? "1px solid #2B3036" : "1px solid #E0E0E0",
+          }}
         >
           <Toolbar>
             <IconButton
@@ -71,7 +90,11 @@ export default function DrawerAppBar(props: Props) {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" }, color: "#fff" }}
+              sx={{
+                mr: 2,
+                display: { sm: "none" },
+                color: isDark ? "#fff" : "#212121",
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -81,7 +104,7 @@ export default function DrawerAppBar(props: Props) {
               sx={{
                 flexGrow: 1,
                 display: { xs: "none", sm: "block", fontWeight: "500" },
-                color: "#fff",
+                color: isDark ? "#fff" : "#212121",
                 fontWeight: "500",
               }}
             >
@@ -94,7 +117,7 @@ export default function DrawerAppBar(props: Props) {
                   to={`/${item.toLowerCase()}`}
                   key={item}
                   sx={{
-                    color: "#fff",
+                    color: isDark ? "#fff" : "#212121",
                     textTransform: "none",
                     fontWeight: "400",
                   }}
@@ -103,6 +126,16 @@ export default function DrawerAppBar(props: Props) {
                 </Button>
               ))}
             </Box>
+            <IconButton
+              onClick={toggleTheme}
+              sx={{
+                ml: 2,
+                color: isDark ? "#fff" : "#212121",
+              }}
+              aria-label="toggle theme"
+            >
+              {isDark ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
           </Toolbar>
         </AppBar>
         <nav>
@@ -119,6 +152,8 @@ export default function DrawerAppBar(props: Props) {
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
+                backgroundColor: isDark ? "#121212" : "#FFFFFF",
+                color: isDark ? "#FFFFFF" : "#212121",
               },
             }}
           >

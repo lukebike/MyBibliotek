@@ -6,20 +6,29 @@ import PostUsers from "./routes/users/PostUsers";
 import { BrowserRouter, Route, Routes } from "react-router";
 import UpdateUser from "./routes/users/UpdateUser";
 import GetAuthors from "./routes/authors/GetAuthors";
-import { darkTheme } from "./theme/themeStyles";
 import PostAuthors from "./routes/authors/PostAuthors";
 import GetBooks from "./routes/books/GetBooks";
 import PostBooks from "./routes/books/PostBooks";
 import UpdateBook from "./routes/books/UpdateBook";
 import UpdateAuthor from "./routes/authors/UpdateAuthor";
 import GetLoans from "./routes/loans/GetLoans";
+import PostLoans from "./routes/loans/PostLoans";
+import { CustomThemeProvider } from "./context/ThemeContext";
+import { useThemeContext } from "./hooks/useThemeContext";
 
-function App() {
+function AppContent() {
+  const { theme, isDark } = useThemeContext();
+
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <Box sx={{ backgroundColor: "#121212", minHeight: "100vh" }}>
+        <Box
+          sx={{
+            backgroundColor: isDark ? "#121212" : "#FFFFFF",
+            minHeight: "100vh",
+          }}
+        >
           <Container maxWidth="lg">
             <div>
               <ResponsiveAppBar />
@@ -34,12 +43,21 @@ function App() {
                 <Route path="books/post" element={<PostBooks />} />
                 <Route path="books/:id" element={<UpdateBook />} />
                 <Route path="loans" element={<GetLoans />} />
+                <Route path="loans/post" element={<PostLoans />} />
               </Routes>
             </div>
           </Container>
         </Box>
       </BrowserRouter>
     </ThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <CustomThemeProvider>
+      <AppContent />
+    </CustomThemeProvider>
   );
 }
 

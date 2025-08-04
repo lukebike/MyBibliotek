@@ -43,3 +43,46 @@ export const darkTheme = createTheme({
     },
   },
 });
+
+export const lightTheme = createTheme({
+  palette: {
+    mode: "light",
+    background: {
+      default: "#FFFFFF",
+    },
+    text: {
+      primary: "#212121",
+      secondary: "#757575",
+      disabled: "#BDBDBD",
+    },
+    divider: "#E0E0E0",
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: "none",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#F5F5F5",
+          color: "#212121",
+        },
+        input: {
+          color: "#212121",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          color: "#212121",
+          borderColor: "#E0E0E0",
+        },
+      },
+    },
+  },
+});

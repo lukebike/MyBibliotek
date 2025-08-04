@@ -17,7 +17,7 @@ export const fuseConfigs = {
   } as IFuseOptions<Book>,
   authors: {
     threshold: 0.3,
-    keys: ["firstName", "lastName", "nationality", "book.title"],
+    keys: ["firstName", "lastName", "nationality", "books.title"],
     readonly: false,
   } as IFuseOptions<Author>,
   loans: {
