@@ -51,13 +51,13 @@ src/
   components/             # Reusable UI components
     DataGridLayout.tsx    # Unified data table layout
     LoadingSpinner.tsx    # Skeleton loading component
-    Get*Columns.tsx       # Column definitions for each entity
+    GetColumns.tsx        # Column definitions for each entity
   config/                 # Configuration files
     fuseConfigs.ts        # Search configuration for Fuse.js
   hooks/                  # Custom React hooks
     useSearch.ts          # Search functionality with debouncing
     useDebounce.ts        # Generic debounce hook
-    use*Menu.tsx          # Action menu hooks for each entity
+    useMenu.tsx          # Action menu hooks for each entity
   layout/                 # Layout components
     ResponsiveAppBar.tsx  # Navigation bar with responsive drawer
   routes/                 # Page components organized by feature
@@ -71,7 +71,7 @@ src/
   theme/                  # MUI theme customization
     themeStyles.ts        # Dark theme configuration
   types/                  # TypeScript type definitions
-    User/                 # User-related types (User, CreateUser, UpdateUser)
+    User/                 # User-related types
     Author/               # Author-related types
     Book/                 # Book-related types
 ```
