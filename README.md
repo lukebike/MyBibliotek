@@ -1,10 +1,10 @@
 # Library System Website
 
-A full-stack library management system with a React + TypeScript + Vite frontend and a Spring Boot backend.
+A full-stack library management system with a React + TypeScript frontend and a Spring Boot backend.
 
 ## Features
 
-- **User, Author, and Book CRUD operations** with full Create, Read, Update, Delete functionality
+- **User, Author, Book, and Loan CRUD operations** with full Create, Read, Update, Delete functionality
 - **Client-side search** with fuzzy search powered by Fuse.js
 - **Skeleton loading states** for better user experience
 - **Reusable components** including DataGrid layout and action menus
@@ -13,20 +13,19 @@ A full-stack library management system with a React + TypeScript + Vite frontend
 - **Axios** for API requests with centralized configuration
 - **React Router** for client-side navigation
 - **Form validation** with React Hook Form and comprehensive error handling
-- **Dark theme** with custom MUI theming
+- **Light and Dark theme toggle** with persistent theme preferences
 
 ## In Progress
 
-- **Integrating the loan system into the frontend**
 - **Dashboard to display all library information**
-- **Interchangable Light and Dark mode themes**
 - **Pleasant mobile navigation experience**
+- **Return loan functionality**
 
 ## Architecture
 
 ### State Management
 
-- **Zustand stores** for Users, Authors, and Books with built-in loading states
+- **Zustand stores** for Users, Authors, Books, and Loans with built-in loading states
 - **API calls integrated into stores** for centralized data fetching
 - **Optimistic updates** for better user experience
 
@@ -36,11 +35,10 @@ A full-stack library management system with a React + TypeScript + Vite frontend
 - **Configurable search options** for different entity types
 - **Skeleton loading** instead of spinners for better perceived performance
 
-### Reusable Components
+### Theme System
 
-- **DataGridLayout** - Unified layout for all data tables
-- **LoadingSpinner** - Skeleton components matching table structure
-- **Custom hooks** for menu actions, search, and debouncing
+- **Light and Dark theme toggle** with Material UI theming
+- **Theme persistence** using localStorage
 
 ## Project Structure
 
@@ -54,26 +52,37 @@ src/
     GetColumns.tsx        # Column definitions for each entity
   config/                 # Configuration files
     fuseConfigs.ts        # Search configuration for Fuse.js
+  context/                # React context providers
+    ThemeContext.tsx      # Theme context definition
+    ThemeContextProvider.tsx # Theme state provider with persistence
   hooks/                  # Custom React hooks
     useSearch.ts          # Search functionality with debouncing
     useDebounce.ts        # Generic debounce hook
-    useMenu.tsx          # Action menu hooks for each entity
+    useThemeContext.ts    # Theme context hook
+    menus/                # Action menu hooks for each entity
+      useUserMenu.tsx     # User action menu
+      useAuthorMenu.tsx   # Author action menu
+      useBookMenu.tsx     # Book action menu
+      useLoanMenu.tsx     # Loan action menu
   layout/                 # Layout components
-    ResponsiveAppBar.tsx  # Navigation bar with responsive drawer
+    ResponsiveAppBar.tsx  # Navigation bar with theme toggle & responsive drawer
   routes/                 # Page components organized by feature
     users/                # User management pages
     authors/              # Author management pages
     books/                # Book management pages
+    loans/                # Loan management pages
   store/                  # Zustand state stores
-    userStore.ts          # User state and API integration
-    authorStore.ts        # Author state with fetchAuthors method
+    userStore.ts          # User state management
+    authorStore.ts        # Author state management
     bookStore.ts          # Book state management
+    loanStore.ts          # Loan state management
   theme/                  # MUI theme customization
-    themeStyles.ts        # Dark theme configuration
+    themeStyles.ts        # Light and dark theme configurations
   types/                  # TypeScript type definitions
-    User/                 # User-related types
-    Author/               # Author-related types
-    Book/                 # Book-related types
+    users/                # User-related types
+    authors/              # Author-related types
+    books/                # Book-related types
+    loans/                # Loan-related types
 ```
 
 ## Getting Started
@@ -88,16 +97,12 @@ src/
 
 ```sh
 npm install
-# or
-yarn install
 ```
 
 ### Run the frontend
 
 ```sh
 npm run dev
-# or
-yarn dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
@@ -106,12 +111,6 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ```sh
 npm run build
-```
-
-### Lint
-
-```sh
-npm run lint
 ```
 
 ## API Configuration
@@ -124,6 +123,7 @@ You can change this in `src/api.ts`.
 ### Search Functionality
 
 - **Fuzzy search** across multiple fields for each entity type
+- **Nested object searching** (e.g., loan search includes user names and book titles)
 - **Debounced input** to prevent excessive API calls
 - **Configurable search keys** per entity in `fuseConfigs.ts`
 
@@ -140,12 +140,20 @@ You can change this in `src/api.ts`.
 - **Update** existing entities with pre-populated forms
 - **Delete** with confirmation dialogs and optimistic updates
 
+### Loan Management
+
+- **Loan tracking** with borrower and book information
+- **Extend loan functionality** with automatic due date updates
+- **Success notifications** using Material UI Snackbars
+- **Data consistency** ensuring UI updates reflect backend changes
+
 ### User Experience
 
 - **Responsive design** with mobile-friendly navigation (in progress)
-- **Dark theme** throughout the application
+- **Light and Dark theme toggle** with persistent preferences
 - **Snackbar notifications** for user feedback
 - **Form validation** with helpful error messages
+- **Smooth theme transitions** throughout the application
 
 ## Tech Stack
 
