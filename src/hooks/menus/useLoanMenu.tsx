@@ -7,6 +7,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
@@ -23,7 +25,7 @@ export const useLoanActionsMenu = () => {
   const loans = useLoanStore((state) => state.loans);
   const setLoans = useLoanStore((state) => state.setLoans);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     loanId: number | string
@@ -42,9 +44,27 @@ export const useLoanActionsMenu = () => {
     setDeleteSuccess(false);
   };
 
-  const handleEditLoan = () => {
+  const handleExtendLoan = async () => {
     if (selectedLoanId) {
-      navigate(`/loans/${selectedLoanId}`);
+      try {
+        const response = await api.put(`/loans/${selectedLoanId}/extend`);
+        const updatedLoan = response.data;
+        setLoans(
+          loans.map((loan: Loan) =>
+            loan.id === updatedLoan.id ? updatedLoan : loan
+          )
+        );
+        setSnackbarOpen(true);
+        handleMenuClose();
+      } catch (error) {
+        console.log("Could not extned loan:", error);
+      }
+    }
+  };
+
+  const handleReturnLoan = () => {
+    if (selectedLoanId) {
+      navigate(`/loans/${selectedLoanId}/return`);
       handleMenuClose();
     }
   };
@@ -65,6 +85,14 @@ export const useLoanActionsMenu = () => {
     }
   };
 
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") return;
+    setSnackbarOpen(false);
+  };
+
   const LoanMenu = () => (
     <>
       <Menu
@@ -72,8 +100,11 @@ export const useLoanActionsMenu = () => {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleEditLoan} sx={{ color: "#168aad" }}>
-          Edit Loan
+        <MenuItem onClick={handleExtendLoan} sx={{ color: "#219EBC" }}>
+          Extend Loan
+        </MenuItem>
+        <MenuItem onClick={handleReturnLoan} sx={{ color: "#81551cff" }}>
+          Return Loan
         </MenuItem>
         <MenuItem
           sx={{ color: "#bc4749", fontWeight: "500" }}
@@ -104,6 +135,20 @@ export const useLoanActionsMenu = () => {
           )}
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Loan successfully extended!
+        </Alert>
+      </Snackbar>
     </>
   );
 

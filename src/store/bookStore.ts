@@ -25,11 +25,16 @@ export const useBookStore = create<BookState>((set) => ({
   fetchBooks: async () => {
     set({ loading: true });
     try {
-      const response = await api.get<Book[]>("/books");
-      set({ books: response.data, loading: false });
+      const response = await api.get("/books", {
+        params: {
+          pageNumber: 0,
+          pageSize: 100,
+        },
+      });
+      set({ books: response.data.books, loading: false });
     } catch (err) {
       set({ loading: false });
-      console.error("Failed to fetch loans", err);
+      console.error("Failed to fetch books", err);
     }
   },
 }));

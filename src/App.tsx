@@ -13,7 +13,7 @@ import UpdateBook from "./routes/books/UpdateBook";
 import UpdateAuthor from "./routes/authors/UpdateAuthor";
 import GetLoans from "./routes/loans/GetLoans";
 import PostLoans from "./routes/loans/PostLoans";
-import { CustomThemeProvider } from "./context/ThemeContext";
+import { ThemeContextProvider } from "./context/ThemeContextProvider";
 import { useThemeContext } from "./hooks/useThemeContext";
 
 function AppContent() {
@@ -55,9 +55,9 @@ function AppContent() {
 
 function App() {
   return (
-    <CustomThemeProvider>
+    <ThemeContextProvider>
       <AppContent />
-    </CustomThemeProvider>
+    </ThemeContextProvider>
   );
 }
 
