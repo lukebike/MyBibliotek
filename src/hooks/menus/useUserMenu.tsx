@@ -58,6 +58,7 @@ export const useUserActionsMenu = () => {
         await api.delete(`/users/${selectedUserId}`);
         setUsers(users.filter((u: User) => u.id !== selectedUserId));
         setDeleteSuccess(true);
+        handleMenuClose();
       } catch (error) {
         console.log("Could not remove user:", error);
       }

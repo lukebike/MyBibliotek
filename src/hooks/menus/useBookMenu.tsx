@@ -38,7 +38,7 @@ export const useBookActionsMenu = () => {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-    setDeleteSuccess(false); // Reset dialog state
+    setDeleteSuccess(false);
   };
 
   const handleEditBook = () => {
@@ -58,6 +58,7 @@ export const useBookActionsMenu = () => {
         await api.delete(`/authors/${selectedBookId}`);
         setBooks(books.filter((book: Book) => book.id !== selectedBookId));
         setDeleteSuccess(true);
+        handleMenuClose();
       } catch (error) {
         console.log("Could not remove user:", error);
       }

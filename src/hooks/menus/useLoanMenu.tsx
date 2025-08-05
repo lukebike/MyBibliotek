@@ -24,7 +24,6 @@ export const useLoanActionsMenu = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const loans = useLoanStore((state) => state.loans);
   const setLoans = useLoanStore((state) => state.setLoans);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -45,7 +44,6 @@ export const useLoanActionsMenu = () => {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-    setDeleteSuccess(false);
   };
 
   const handleExtendLoan = async () => {
@@ -125,9 +123,10 @@ export const useLoanActionsMenu = () => {
       try {
         await api.delete(`/loans/${selectedLoanId}`);
         setLoans(loans.filter((loan: Loan) => loan.id !== selectedLoanId));
-        setDeleteSuccess(true);
         setSuccessMessage("Loan deleted successfully!");
         setSuccessSnackbarOpen(true);
+        setDialogOpen(false);
+        handleMenuClose();
       } catch (error: any) {
         const errorMsg =
           error.response?.data?.message || "Could not remove loan";
@@ -154,80 +153,80 @@ export const useLoanActionsMenu = () => {
     setErrorSnackbarOpen(false);
   };
 
-  const LoanMenu = () => (
-    <>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleExtendLoan} sx={{ color: "#219EBC" }}>
-          Extend Loan
-        </MenuItem>
-        <MenuItem onClick={handleReturnLoan} sx={{ color: "#81551cff" }}>
-          Return Loan
-        </MenuItem>
-        <MenuItem
-          sx={{ color: "#bc4749", fontWeight: "500" }}
-          onClick={handleDeleteLoan}
-        >
-          Delete Loan
-        </MenuItem>
-      </Menu>
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>
-          {deleteSuccess ? "Loan Deleted" : "Confirm Deletion"}
-        </DialogTitle>
-        <DialogContent>
-          {deleteSuccess
-            ? "Loan deleted successfully!"
-            : "Are you sure you want to delete this loan? This action cannot be undone."}
-        </DialogContent>
-        <DialogActions>
-          {deleteSuccess ? (
-            <Button onClick={handleDialogClose}>Close</Button>
-          ) : (
-            <>
-              <Button onClick={handleDialogClose}>Cancel</Button>
-              <Button color="error" onClick={confirmDeleteLoan}>
-                Delete
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={successSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSuccessSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleSuccessSnackbarClose}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {successMessage}
-        </Alert>
-      </Snackbar>
+  const LoanMenu = () => {
+    const selectedLoan = loans.find((loan: Loan) => loan.id === selectedLoanId);
+    const isReturned = selectedLoan?.returnedDate !== null;
 
-      {/* Error Snackbar */}
-      <Snackbar
-        open={errorSnackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleErrorSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleErrorSnackbarClose}
-          severity="error"
-          sx={{ width: "100%" }}
+    return (
+      <>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
         >
-          {errorMessage}
-        </Alert>
-      </Snackbar>
-    </>
-  );
+          {!isReturned && (
+            <MenuItem onClick={handleExtendLoan} sx={{ color: "#219EBC" }}>
+              Extend Loan
+            </MenuItem>
+          )}
+          {!isReturned && (
+            <MenuItem onClick={handleReturnLoan} sx={{ color: "#81551cff" }}>
+              Return Loan
+            </MenuItem>
+          )}
+          <MenuItem
+            sx={{ color: "#bc4749", fontWeight: "500" }}
+            onClick={handleDeleteLoan}
+          >
+            Delete Loan
+          </MenuItem>
+        </Menu>
+        <Dialog open={dialogOpen} onClose={handleDialogClose}>
+          <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogContent>
+            Are you sure you want to delete this loan? This action cannot be
+            undone.
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose}>Cancel</Button>
+            <Button color="error" onClick={confirmDeleteLoan}>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Snackbar
+          open={successSnackbarOpen}
+          autoHideDuration={3000}
+          onClose={handleSuccessSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleSuccessSnackbarClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {successMessage}
+          </Alert>
+        </Snackbar>
+
+        {/* Error Snackbar */}
+        <Snackbar
+          open={errorSnackbarOpen}
+          autoHideDuration={4000}
+          onClose={handleErrorSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleErrorSnackbarClose}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      </>
+    );
+  };
 
   return {
     handleMenuOpen,
