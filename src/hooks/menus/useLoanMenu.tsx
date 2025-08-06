@@ -11,7 +11,6 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import type { Loan } from "../../types/loans/Loan";
 import { useLoanStore } from "../../store/loanStore";
@@ -132,6 +131,7 @@ export const useLoanActionsMenu = () => {
           error.response?.data?.message || "Could not remove loan";
         setErrorMessage(errorMsg);
         setErrorSnackbarOpen(true);
+        setDialogOpen(false);
         console.log("Could not remove loan:", error);
       }
     }

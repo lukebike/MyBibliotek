@@ -1,17 +1,10 @@
 import api from "../../api";
-import {
-  Box,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Box, TextField, Button, Paper, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { CreateBook } from "../../types/books/CreateBook";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuthorStore } from "../../store/authorStore";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function PostBooks() {
   const {
@@ -20,15 +13,10 @@ export default function PostBooks() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<CreateBook>();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success"
-  );
 
   const authors = useAuthorStore((state) => state.authors);
   const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
-
+  const { showSuccess, showError } = useNotification();
   useEffect(() => {
     fetchAuthors();
   }, [fetchAuthors]);
@@ -36,14 +24,12 @@ export default function PostBooks() {
   const onSubmit: SubmitHandler<CreateBook> = async (data) => {
     try {
       const response = await api.post("/books", data);
-      setSnackbarMsg(`Book ${response.data.title} created successfully!`);
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      showSuccess(`Book ${response.data.title} created successfully!`);
+
       reset();
     } catch (error) {
-      setSnackbarMsg("Failed to create book.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      showError("Failed to create book.");
+
       if (typeof error === "object" && error !== null && "response" in error) {
         // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
         console.error("Failed to create book:", error.response.data.errors);
@@ -161,20 +147,6 @@ export default function PostBooks() {
           Submit Form!
         </Button>
       </Box>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMsg}
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 }

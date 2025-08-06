@@ -1,16 +1,8 @@
 import api from "../../api";
-import {
-  Box,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { Box, TextField, Button, Paper, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { CreateUser } from "../../types/users/CreateUser";
-import { useState } from "react";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function PostUsers() {
   const {
@@ -18,22 +10,15 @@ export default function PostUsers() {
     handleSubmit,
     formState: { errors },
   } = useForm<CreateUser>();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success"
-  );
+
+  const { showSuccess, showError } = useNotification();
 
   const onSubmit: SubmitHandler<CreateUser> = async (data) => {
     try {
       const response = await api.post("/users", data);
-      setSnackbarMsg(`User ${response.data.firstName} created successfully!`);
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      showSuccess(`User ${response.data.firstName} created successfully!`);
     } catch (error) {
-      setSnackbarMsg("Failed to create user.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      showError("Failed to create user.");
       if (typeof error === "object" && error !== null && "response" in error) {
         // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
         console.error("Failed to create user:", error.response.data.errors);
@@ -134,20 +119,6 @@ export default function PostUsers() {
           Submit Form!
         </Button>
       </Box>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMsg}
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 }

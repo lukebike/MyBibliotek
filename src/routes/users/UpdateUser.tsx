@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import { useUserStore } from "../../store/userStore";
 import type { UpdateUser } from "../../types/users/UpdateUser";
 import { useEffect } from "react";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function UpdateUser() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +18,8 @@ export default function UpdateUser() {
     reset,
     formState: { errors },
   } = useForm<UpdateUser>();
+
+  const { showSuccess, showError } = useNotification();
 
   useEffect(() => {
     const user = users.find((u) => String(u.id) === String(id));
@@ -36,9 +39,12 @@ export default function UpdateUser() {
     try {
       const response = await api.put(`/users/${id}`, data);
       updateUser(response.data);
-      window.alert(`User updated successfully!`);
-      navigate("/users");
+      showSuccess(`User updated successfully!`);
+      setTimeout(() => {
+        navigate("/users");
+      }, 1000);
     } catch (error) {
+      showError(`Failed to update user: ${error}`);
       console.error("Failed to update user:", error);
     }
   };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import api from "../../api";
@@ -6,15 +7,16 @@ import { useEffect } from "react";
 import type { UpdateBook } from "../../types/books/UpdateBook";
 import { useBookStore } from "../../store/bookStore";
 import { useAuthorStore } from "../../store/authorStore";
+import { useNotification } from "../../hooks/useNotification";
 
-export default function EditUser() {
+export default function UpdateBook() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const books = useBookStore((state) => state.books);
   const updateBook = useBookStore((state) => state.updateBook);
   const authors = useAuthorStore((state) => state.authors);
   const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
-
+  const { showSuccess, showError } = useNotification();
   const {
     register,
     handleSubmit,
@@ -32,9 +34,12 @@ export default function EditUser() {
         .then((response) => {
           reset(response.data);
         })
-        .catch((err) => console.error("Failed to fetch book:", err));
+        .catch((err) => {
+          console.error("Failed to fetch book:", err);
+          showError("Failed to fetch book data");
+        });
     }
-  }, [id, books, reset]);
+  }, [id, books, reset, showError]);
 
   useEffect(() => {
     fetchAuthors();
@@ -42,14 +47,22 @@ export default function EditUser() {
 
   const onSubmit: SubmitHandler<UpdateBook> = async (data) => {
     try {
-      const response = await api.put(`/book/${id}`, data);
+      const response = await api.put(`/books/${id}`, data);
       updateBook(response.data);
-      window.alert(`Book updated successfully!`);
-      navigate("/books");
-    } catch (error) {
+      showSuccess("Book updated succesfully!", 3000);
+      setTimeout(() => {
+        navigate("/books");
+      }, 1000);
+    } catch (error: any) {
+      const errorMsg =
+        error instanceof Error && "response" in error
+          ? (error as any).response?.data?.message || "Failed to update book"
+          : "Failed to update book";
+      showError(errorMsg);
       console.error("Failed to update book:", error);
     }
   };
+
   return (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>

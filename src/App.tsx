@@ -15,6 +15,7 @@ import GetLoans from "./routes/loans/GetLoans";
 import PostLoans from "./routes/loans/PostLoans";
 import { ThemeContextProvider } from "./context/ThemeContextProvider";
 import { useThemeContext } from "./hooks/useThemeContext";
+import { NotificationManager } from "./components/NotifiactionManager";
 
 function AppContent() {
   const { theme, isDark } = useThemeContext();
@@ -30,23 +31,22 @@ function AppContent() {
           }}
         >
           <Container maxWidth="lg">
-            <div>
-              <ResponsiveAppBar />
-              <Routes>
-                <Route path="users" element={<GetUsers />} />
-                <Route path="users/post" element={<PostUsers />} />
-                <Route path="users/:id" element={<UpdateUser />} />
-                <Route path="authors" element={<GetAuthors />} />
-                <Route path="authors/post" element={<PostAuthors />} />
-                <Route path="authors/:id" element={<UpdateAuthor />} />
-                <Route path="books" element={<GetBooks />} />
-                <Route path="books/post" element={<PostBooks />} />
-                <Route path="books/:id" element={<UpdateBook />} />
-                <Route path="loans" element={<GetLoans />} />
-                <Route path="loans/post" element={<PostLoans />} />
-              </Routes>
-            </div>
+            <ResponsiveAppBar />
+            <Routes>
+              <Route path="users" element={<GetUsers />} />
+              <Route path="users/post" element={<PostUsers />} />
+              <Route path="users/:id" element={<UpdateUser />} />
+              <Route path="authors" element={<GetAuthors />} />
+              <Route path="authors/post" element={<PostAuthors />} />
+              <Route path="authors/:id" element={<UpdateAuthor />} />
+              <Route path="books" element={<GetBooks />} />
+              <Route path="books/post" element={<PostBooks />} />
+              <Route path="books/:id" element={<UpdateBook />} />
+              <Route path="loans" element={<GetLoans />} />
+              <Route path="loans/post" element={<PostLoans />} />
+            </Routes>
           </Container>
+          <NotificationManager />
         </Box>
       </BrowserRouter>
     </ThemeProvider>

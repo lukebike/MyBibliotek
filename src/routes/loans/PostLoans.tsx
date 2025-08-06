@@ -1,20 +1,13 @@
 import api from "../../api";
-import {
-  Box,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Box, TextField, Button, Paper, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import type { CreateLoan } from "../../types/loans/CreateLoan";
 import { useUserStore } from "../../store/userStore";
 import { useBookStore } from "../../store/bookStore";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function PostBooks() {
   const {
@@ -23,11 +16,8 @@ export default function PostBooks() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<CreateLoan>();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success"
-  );
+
+  const { showSuccess, showError } = useNotification();
 
   const users = useUserStore((state) => state.users);
   const fetchUsers = useUserStore((state) => state.fetchUsers);
@@ -46,16 +36,11 @@ export default function PostBooks() {
   const onSubmit: SubmitHandler<CreateLoan> = async (data) => {
     try {
       const response = await api.post("/loans", data);
-      setSnackbarMsg(
-        `Loan for ${response.data.book.title} created successfully!`
-      );
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      showSuccess(`Loan for ${response.data.book.title} created successfully!`);
+
       reset();
     } catch (error) {
-      setSnackbarMsg("Failed to create loan.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      showError("Failed to create loan.");
       if (typeof error === "object" && error !== null && "response" in error) {
         // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
         console.error("Failed to create loan:", error.response.data.errors);
@@ -130,20 +115,6 @@ export default function PostBooks() {
           Submit Form!
         </Button>
       </Box>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMsg}
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 }

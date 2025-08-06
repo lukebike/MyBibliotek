@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Menu,
@@ -7,6 +8,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
@@ -21,8 +24,11 @@ export const useBookActionsMenu = () => {
   );
   const [dialogOpen, setDialogOpen] = useState(false);
   const books = useBookStore((state) => state.books);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
   const setBooks = useBookStore((state) => state.setBooks);
+  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     bookId: number | string
@@ -38,7 +44,6 @@ export const useBookActionsMenu = () => {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-    setDeleteSuccess(false);
   };
 
   const handleEditBook = () => {
@@ -55,14 +60,37 @@ export const useBookActionsMenu = () => {
   const confirmDeleteBook = async () => {
     if (selectedBookId) {
       try {
-        await api.delete(`/authors/${selectedBookId}`);
+        await api.delete(`/books/${selectedBookId}`);
         setBooks(books.filter((book: Book) => book.id !== selectedBookId));
-        setDeleteSuccess(true);
+        setSuccessMessage("Book deleted successfully!");
+        setSuccessSnackbarOpen(true);
+        setDialogOpen(false);
         handleMenuClose();
-      } catch (error) {
-        console.log("Could not remove user:", error);
+      } catch (error: any) {
+        const errorMsg =
+          error.response?.data?.message || "Could not remove book";
+        setErrorMessage(errorMsg);
+        setErrorSnackbarOpen(true);
+        setDialogOpen(false);
+        console.log("Could not remove book:", error);
       }
     }
+  };
+
+  const handleSuccessSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") return;
+    setSuccessSnackbarOpen(false);
+  };
+
+  const handleErrorSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") return;
+    setErrorSnackbarOpen(false);
   };
 
   const BookMenu = () => (
@@ -83,27 +111,50 @@ export const useBookActionsMenu = () => {
         </MenuItem>
       </Menu>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>
-          {deleteSuccess ? "Book Deleted" : "Confirm Deletion"}
-        </DialogTitle>
+        <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          {deleteSuccess
-            ? "Book deleted successfully!"
-            : "Are you sure you want to delete this book? This action cannot be undone."}
+          Are you sure you want to delete this book? This action cannot be
+          undone.
         </DialogContent>
         <DialogActions>
-          {deleteSuccess ? (
-            <Button onClick={handleDialogClose}>Close</Button>
-          ) : (
-            <>
-              <Button onClick={handleDialogClose}>Cancel</Button>
-              <Button color="error" onClick={confirmDeleteBook}>
-                Delete
-              </Button>
-            </>
-          )}
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button color="error" onClick={confirmDeleteBook}>
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={successSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSuccessSnackbarClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={errorSnackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleErrorSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleErrorSnackbarClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 
