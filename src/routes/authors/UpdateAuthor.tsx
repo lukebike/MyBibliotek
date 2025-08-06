@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import api from "../../api";
@@ -5,6 +6,7 @@ import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useAuthorStore } from "../../store/authorStore";
 import type { UpdateAuthor } from "../../types/authors/UpdateAuthor";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function UpdateAuthor() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +19,8 @@ export default function UpdateAuthor() {
     reset,
     formState: { errors },
   } = useForm<UpdateAuthor>();
+
+  const { showSuccess, showError } = useNotification();
 
   useEffect(() => {
     const author = authors.find((author) => String(author.id) === String(id));
@@ -36,9 +40,12 @@ export default function UpdateAuthor() {
     try {
       const response = await api.put(`/author/${id}`, data);
       updateAuthor(response.data);
-      window.alert(`Author updated successfully!`);
-      navigate("/authors");
-    } catch (error) {
+      showSuccess(`Author updated successfully!`);
+      setTimeout(() => {
+        navigate("/authors");
+      }, 1000);
+    } catch (error: any) {
+      showError(`Failed to update author: ${error.response?.data}`);
       console.error("Failed to update author:", error);
     }
   };

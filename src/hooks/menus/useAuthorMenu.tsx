@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import {
   Menu,
@@ -12,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import type { Author } from "../../types/authors/Author";
 import { useAuthorStore } from "../../store/authorStore";
+import { useNotification } from "../useNotification";
 
 export const useAuthorActionsMenu = () => {
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ export const useAuthorActionsMenu = () => {
   >(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const authors = useAuthorStore((state) => state.authors);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const { showSuccess, showError } = useNotification();
   const setAuthors = useAuthorStore((state) => state.setAuthors);
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -38,7 +40,6 @@ export const useAuthorActionsMenu = () => {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-    setDeleteSuccess(false); // Reset dialog state
   };
 
   const handleEditAuthor = () => {
@@ -59,9 +60,10 @@ export const useAuthorActionsMenu = () => {
         setAuthors(
           authors.filter((author: Author) => author.id !== selectedAuthorId)
         );
-        setDeleteSuccess(true);
-      } catch (error) {
-        console.log("Could not remove user:", error);
+        showSuccess(`Author deleted successfully`);
+      } catch (error: any) {
+        showError(`Could not remove author: ${error.response?.data}`);
+        console.log("Could not remove author:", error);
       }
     }
   };
@@ -84,25 +86,16 @@ export const useAuthorActionsMenu = () => {
         </MenuItem>
       </Menu>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>
-          {deleteSuccess ? "Author Deleted" : "Confirm Deletion"}
-        </DialogTitle>
+        <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          {deleteSuccess
-            ? "Author deleted successfully!"
-            : "Are you sure you want to delete this author? This action cannot be undone."}
+          Are you sure you want to delete this author? This action cannot be
+          undone.
         </DialogContent>
         <DialogActions>
-          {deleteSuccess ? (
-            <Button onClick={handleDialogClose}>Close</Button>
-          ) : (
-            <>
-              <Button onClick={handleDialogClose}>Cancel</Button>
-              <Button color="error" onClick={confirmDeleteAuthor}>
-                Delete
-              </Button>
-            </>
-          )}
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button color="error" onClick={confirmDeleteAuthor}>
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     </>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import api from "../../api";
@@ -43,8 +44,8 @@ export default function UpdateUser() {
       setTimeout(() => {
         navigate("/users");
       }, 1000);
-    } catch (error) {
-      showError(`Failed to update user: ${error}`);
+    } catch (error: any) {
+      showError(`Failed to update user: ${error.response?.data}`);
       console.error("Failed to update user:", error);
     }
   };

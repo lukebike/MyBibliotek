@@ -8,12 +8,11 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import api from "../../api";
 import type { Loan } from "../../types/loans/Loan";
 import { useLoanStore } from "../../store/loanStore";
+import { useNotification } from "../useNotification";
 
 export const useLoanActionsMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -23,10 +22,7 @@ export const useLoanActionsMenu = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const loans = useLoanStore((state) => state.loans);
   const setLoans = useLoanStore((state) => state.setLoans);
-  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
-  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const { showSuccess, showError } = useNotification();
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -49,10 +45,7 @@ export const useLoanActionsMenu = () => {
     if (selectedLoanId) {
       const loan = loans.find((loan: Loan) => loan.id === selectedLoanId);
       if (loan?.returnedDate) {
-        setErrorMessage(
-          "Cannot extend loan: This book has already been returned."
-        );
-        setErrorSnackbarOpen(true);
+        showError("Cannot extend loan: This book has already been returned.");
         handleMenuClose();
         return;
       }
@@ -64,18 +57,16 @@ export const useLoanActionsMenu = () => {
             loan.id === updatedLoan.id ? updatedLoan : loan
           )
         );
-        setSuccessMessage(
+        showSuccess(
           `Loan extended successfully! New due date: ${new Date(
             updatedLoan.dueDate
           ).toLocaleDateString()}`
         );
-        setSuccessSnackbarOpen(true);
         handleMenuClose();
       } catch (error: any) {
         const errorMsg =
           error.response?.data?.message || "Could not extend loan";
-        setErrorMessage(errorMsg);
-        setErrorSnackbarOpen(true);
+        showError(errorMsg);
         console.log("Could not extend loan:", error);
       }
     }
@@ -85,8 +76,7 @@ export const useLoanActionsMenu = () => {
     if (selectedLoanId) {
       const loan = loans.find((loan: Loan) => loan.id === selectedLoanId);
       if (loan?.returnedDate) {
-        setErrorMessage("This book has already been returned.");
-        setErrorSnackbarOpen(true);
+        showError("This book has already been returned.");
 
         handleMenuClose();
         return;
@@ -100,14 +90,12 @@ export const useLoanActionsMenu = () => {
           )
         );
         const bookTitle = updatedLoan.book?.title || "Book";
-        setSuccessMessage(`${bookTitle} returned successfully!`);
-        setSuccessSnackbarOpen(true);
+        showSuccess(`${bookTitle} returned successfully!`);
         handleMenuClose();
       } catch (error: any) {
         const errorMessage =
           error.response?.data?.message || "Could not return loan";
-        setErrorSnackbarOpen(true);
-        setErrorMessage(errorMessage);
+        showError(errorMessage);
         console.error("Could not return loan:", error);
       }
     }
@@ -122,35 +110,17 @@ export const useLoanActionsMenu = () => {
       try {
         await api.delete(`/loans/${selectedLoanId}`);
         setLoans(loans.filter((loan: Loan) => loan.id !== selectedLoanId));
-        setSuccessMessage("Loan deleted successfully!");
-        setSuccessSnackbarOpen(true);
+        showSuccess("Loan deleted successfully!");
         setDialogOpen(false);
         handleMenuClose();
       } catch (error: any) {
         const errorMsg =
           error.response?.data?.message || "Could not remove loan";
-        setErrorMessage(errorMsg);
-        setErrorSnackbarOpen(true);
+        showError(errorMsg);
         setDialogOpen(false);
         console.log("Could not remove loan:", error);
       }
     }
-  };
-
-  const handleSuccessSnackbarClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") return;
-    setSuccessSnackbarOpen(false);
-  };
-
-  const handleErrorSnackbarClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") return;
-    setErrorSnackbarOpen(false);
   };
 
   const LoanMenu = () => {
@@ -194,36 +164,6 @@ export const useLoanActionsMenu = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        <Snackbar
-          open={successSnackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSuccessSnackbarClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert
-            onClose={handleSuccessSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            {successMessage}
-          </Alert>
-        </Snackbar>
-
-        {/* Error Snackbar */}
-        <Snackbar
-          open={errorSnackbarOpen}
-          autoHideDuration={4000}
-          onClose={handleErrorSnackbarClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert
-            onClose={handleErrorSnackbarClose}
-            severity="error"
-            sx={{ width: "100%" }}
-          >
-            {errorMessage}
-          </Alert>
-        </Snackbar>
       </>
     );
   };

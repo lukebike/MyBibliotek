@@ -54,11 +54,7 @@ export default function UpdateBook() {
         navigate("/books");
       }, 1000);
     } catch (error: any) {
-      const errorMsg =
-        error instanceof Error && "response" in error
-          ? (error as any).response?.data?.message || "Failed to update book"
-          : "Failed to update book";
-      showError(errorMsg);
+      showError(`Failed to update book: ${error.response?.data}`);
       console.error("Failed to update book:", error);
     }
   };

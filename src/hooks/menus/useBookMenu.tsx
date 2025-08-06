@@ -8,13 +8,12 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import type { Book } from "../../types/books/Book";
 import { useBookStore } from "../../store/bookStore";
+import { useNotification } from "../useNotification";
 
 export const useBookActionsMenu = () => {
   const navigate = useNavigate();
@@ -25,10 +24,7 @@ export const useBookActionsMenu = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const books = useBookStore((state) => state.books);
   const setBooks = useBookStore((state) => state.setBooks);
-  const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
-  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const { showSuccess, showError } = useNotification();
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
     bookId: number | string
@@ -62,35 +58,17 @@ export const useBookActionsMenu = () => {
       try {
         await api.delete(`/books/${selectedBookId}`);
         setBooks(books.filter((book: Book) => book.id !== selectedBookId));
-        setSuccessMessage("Book deleted successfully!");
-        setSuccessSnackbarOpen(true);
+        showSuccess("Book deleted successfully!");
         setDialogOpen(false);
         handleMenuClose();
       } catch (error: any) {
         const errorMsg =
           error.response?.data?.message || "Could not remove book";
-        setErrorMessage(errorMsg);
-        setErrorSnackbarOpen(true);
+        showError(errorMsg);
         setDialogOpen(false);
         console.log("Could not remove book:", error);
       }
     }
-  };
-
-  const handleSuccessSnackbarClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") return;
-    setSuccessSnackbarOpen(false);
-  };
-
-  const handleErrorSnackbarClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") return;
-    setErrorSnackbarOpen(false);
   };
 
   const BookMenu = () => (
@@ -123,38 +101,6 @@ export const useBookActionsMenu = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Success Snackbar */}
-      <Snackbar
-        open={successSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSuccessSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleSuccessSnackbarClose}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {successMessage}
-        </Alert>
-      </Snackbar>
-
-      {/* Error Snackbar */}
-      <Snackbar
-        open={errorSnackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleErrorSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleErrorSnackbarClose}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          {errorMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 

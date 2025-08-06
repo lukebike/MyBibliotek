@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../store/userStore";
 import api from "../../api";
 import type { User } from "../../types/users/User";
+import { useNotification } from "../useNotification";
 
 export const useUserActionsMenu = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export const useUserActionsMenu = () => {
   );
   const [dialogOpen, setDialogOpen] = useState(false);
   const users = useUserStore((state) => state.users);
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const { showSuccess, showError } = useNotification();
   const setUsers = useUserStore((state) => state.setUsers);
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -38,7 +39,6 @@ export const useUserActionsMenu = () => {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-    setDeleteSuccess(false); // Reset dialog state
   };
 
   const handleEditUser = () => {
@@ -57,9 +57,11 @@ export const useUserActionsMenu = () => {
       try {
         await api.delete(`/users/${selectedUserId}`);
         setUsers(users.filter((u: User) => u.id !== selectedUserId));
-        setDeleteSuccess(true);
+        showSuccess("User deleted successfully!");
+        setDialogOpen(false);
         handleMenuClose();
       } catch (error) {
+        showError(`Could not remove user: ${error}`);
         console.log("Could not remove user:", error);
       }
     }
@@ -83,25 +85,16 @@ export const useUserActionsMenu = () => {
         </MenuItem>
       </Menu>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>
-          {deleteSuccess ? "User Deleted" : "Confirm Deletion"}
-        </DialogTitle>
+        <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          {deleteSuccess
-            ? "User deleted successfully!"
-            : "Are you sure you want to delete this user? This action cannot be undone."}
+          Are you sure you want to delete this user? This action cannot be
+          undone.
         </DialogContent>
         <DialogActions>
-          {deleteSuccess ? (
-            <Button onClick={handleDialogClose}>Close</Button>
-          ) : (
-            <>
-              <Button onClick={handleDialogClose}>Cancel</Button>
-              <Button color="error" onClick={confirmDeleteUser}>
-                Delete
-              </Button>
-            </>
-          )}
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button color="error" onClick={confirmDeleteUser}>
+            Delete
+          </Button>
         </DialogActions>
       </Dialog>
     </>
