@@ -6,7 +6,8 @@ export const NotificationManager: React.FC = () => {
   const { notifications, removeNotification } = useNotificationStore();
 
   const handleClose =
-    (id: string) => (event?: React.SyntheticEvent | Event, reason?: string) => {
+    (id: string) =>
+    (_event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === "clickaway") return;
       removeNotification(id);
     };
