@@ -45,6 +45,7 @@ function AppContent() {
               <Route path="books/:id" element={<UpdateBook />} />
               <Route path="loans" element={<GetLoans />} />
               <Route path="loans/post" element={<PostLoans />} />
+              <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </Container>
