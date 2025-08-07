@@ -45,9 +45,7 @@ export const DataGridLayout: React.FC<DataGridLayoutProps> = ({
         startIcon={<AddIcon />}
         sx={{
           backgroundColor: "grey",
-          "&:hover": {
-            backgroundColor: "cyan",
-          },
+          "&:hover": { backgroundColor: "#1565C0" },
         }}
       >
         Add {title.split(" ")[1]}
