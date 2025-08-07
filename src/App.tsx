@@ -16,6 +16,8 @@ import PostLoans from "./routes/loans/PostLoans";
 import { ThemeContextProvider } from "./context/ThemeContextProvider";
 import { useThemeContext } from "./hooks/useThemeContext";
 import { NotificationManager } from "./components/NotifiactionManager";
+import { DashboardCard } from "./components/DashboardCard";
+import Dashboard from "./layout/Dashboard";
 
 function AppContent() {
   const { theme, isDark } = useThemeContext();
@@ -44,6 +46,7 @@ function AppContent() {
               <Route path="books/:id" element={<UpdateBook />} />
               <Route path="loans" element={<GetLoans />} />
               <Route path="loans/post" element={<PostLoans />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </Container>
           <NotificationManager />

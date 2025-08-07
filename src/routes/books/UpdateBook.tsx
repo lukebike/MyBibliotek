@@ -36,10 +36,9 @@ export default function UpdateBook() {
         })
         .catch((err) => {
           console.error("Failed to fetch book:", err);
-          showError("Failed to fetch book data");
         });
     }
-  }, [id, books, reset, showError]);
+  }, [id, books, reset]);
 
   useEffect(() => {
     fetchAuthors();
@@ -54,7 +53,31 @@ export default function UpdateBook() {
         navigate("/books");
       }, 1000);
     } catch (error: any) {
-      showError(`Failed to update book: ${error.response?.data}`);
+      let errorMessage = "Failed to update book";
+
+      if (error.response?.data) {
+        const errorData = error.response.data;
+
+        if (Array.isArray(errorData)) {
+          const errorMessages = errorData.map(
+            (err) => err.message || String(err)
+          );
+
+          if (errorMessages.length === 1) {
+            errorMessage = errorMessages[0];
+          } else {
+            errorMessage = `Please fix the following issues:\n${errorMessages
+              .map((msg) => `• ${msg}`)
+              .join("\n")}`;
+          }
+        } else if (typeof errorData === "string") {
+          errorMessage = errorData;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      }
+
+      showError(errorMessage);
       console.error("Failed to update book:", error);
     }
   };

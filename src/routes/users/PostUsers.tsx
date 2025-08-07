@@ -3,6 +3,7 @@ import { Box, TextField, Button, Paper, Typography } from "@mui/material";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { CreateUser } from "../../types/users/CreateUser";
 import { useNotification } from "../../hooks/useNotification";
+import { useNavigate } from "react-router";
 
 export default function PostUsers() {
   const {
@@ -12,11 +13,15 @@ export default function PostUsers() {
   } = useForm<CreateUser>();
 
   const { showSuccess, showError } = useNotification();
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<CreateUser> = async (data) => {
     try {
       const response = await api.post("/users", data);
       showSuccess(`User ${response.data.firstName} created successfully!`);
+      setTimeout(() => {
+        navigate("/users");
+      }, 1000);
     } catch (error) {
       showError("Failed to create user.");
       if (typeof error === "object" && error !== null && "response" in error) {
