@@ -5,29 +5,37 @@ A full-stack library management system with a React + TypeScript frontend and a 
 ## Features
 
 - **User, Author, Book, and Loan CRUD operations** with full Create, Read, Update, Delete functionality
+- **Interactive Dashboard** with real-time metrics, user growth tracking, and library statistics
 - **Client-side search** with fuzzy search powered by Fuse.js
 - **Skeleton loading states** for better user experience
-- **Reusable components** including DataGrid layout and action menus
-- **Material UI (MUI)** for modern, responsive UI components
+- **Reusable components** including DataGrid layout, DashboardCard, and action menus
+- **Material UI (MUI)** for modern, responsive UI components such as MUI X Datagrid
 - **Zustand** for efficient state management across all entities
 - **Axios** for API requests with centralized configuration
 - **React Router** for client-side navigation
 - **Form validation** with React Hook Form and comprehensive error handling
-- **Light and Dark theme toggle** with persistent theme preferences
+- **Fully theme-aware Light and Dark mode** with persistent theme preferences
 
 ## In Progress
 
-- **Dashboard to display all library information**
 - **Pleasant mobile navigation experience**
-- **Return loan functionality**
+- **Enhanced dashboard analytics** with more detailed library insights
 
 ## Architecture
+
+### Dashboard System
+
+- **Real-time metrics calculation** using dayjs for date handling
+- **User growth tracking** with monthly percentage calculations
+- **Dashboard cards** with growth indicators
+- **Recent activity tables** for loans and returns
 
 ### State Management
 
 - **Zustand stores** for Users, Authors, Books, and Loans with built-in loading states
 - **API calls integrated into stores** for centralized data fetching
 - **Optimistic updates** for better user experience
+- **Custom hooks** for business logic like user growth calculations
 
 ### Search & Performance
 
@@ -37,7 +45,7 @@ A full-stack library management system with a React + TypeScript frontend and a 
 
 ### Theme System
 
-- **Light and Dark theme toggle** with Material UI theming
+- **Light and Dark theme toggle** with Material UI
 - **Theme persistence** using localStorage
 
 ## Project Structure
@@ -48,6 +56,8 @@ src/
   App.tsx                 # Main app component with routing and theming
   components/             # Reusable UI components
     DataGridLayout.tsx    # Unified data table layout
+    DashboardCard.tsx     # Dashboard metric cards with growth indicators
+    ProgressBar.tsx       # Theme-aware progress indicators
     LoadingSpinner.tsx    # Skeleton loading component
     GetColumns.tsx        # Column definitions for each entity
   config/                 # Configuration files
@@ -59,6 +69,7 @@ src/
     useSearch.ts          # Search functionality with debouncing
     useDebounce.ts        # Generic debounce hook
     useThemeContext.ts    # Theme context hook
+    getUserGrowth.ts      # User analytics and growth calculations
     menus/                # Action menu hooks for each entity
       useUserMenu.tsx     # User action menu
       useAuthorMenu.tsx   # Author action menu
@@ -66,6 +77,7 @@ src/
       useLoanMenu.tsx     # Loan action menu
   layout/                 # Layout components
     ResponsiveAppBar.tsx  # Navigation bar with theme toggle & responsive drawer
+    Dashboard.tsx         # Main dashboard with metrics and analytics
   routes/                 # Page components organized by feature
     users/                # User management pages
     authors/              # Author management pages
@@ -83,6 +95,7 @@ src/
     authors/              # Author-related types
     books/                # Book-related types
     loans/                # Loan-related types
+    DashboardStats.ts     # Dashboard and analytics type definitions
 ```
 
 ## Getting Started
@@ -120,6 +133,13 @@ You can change this in `src/api.ts`.
 
 ## Key Features Implemented
 
+### Dashboard Analytics
+
+- **User growth tracking** with monthly percentage calculations based on registration dates
+- **Dynamic metric cards** showing total users, active loans, books returned, and collection statistics
+- **Progress indicators** for library usage metrics and popular book tracking
+- **Recent activity tables** displaying recent loans and returns
+
 ### Search Functionality
 
 - **Fuzzy search** across multiple fields for each entity type
@@ -150,14 +170,14 @@ You can change this in `src/api.ts`.
 ### User Experience
 
 - **Responsive design** with mobile-friendly navigation (in progress)
-- **Light and Dark theme toggle** with persistent preferences
 - **Snackbar notifications** for user feedback
 - **Form validation** with helpful error messages
 - **Smooth theme transitions** throughout the application
+- **Dashboard metrics** providing valuable and easy to read insights
 
 ## Tech Stack
 
-- [React](https://react.dev/) - UI library
+- [React](https://react.dev/) - Framework
 - [TypeScript](https://www.typescriptlang.org/) - Type safety
 - [Vite](https://vitejs.dev/) - Build tool and dev server
 - [Material UI](https://mui.com/) - UI component library
@@ -166,3 +186,4 @@ You can change this in `src/api.ts`.
 - [React Hook Form](https://react-hook-form.com/) - Form handling
 - [Fuse.js](https://fusejs.io/) - Fuzzy search
 - [React Router](https://reactrouter.com/) - Client-side routing
+- [Day.js](https://day.js.org/) - Date manipulation for analytics
