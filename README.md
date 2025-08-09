@@ -1,6 +1,6 @@
 # Library System Website
 
-A full-stack library management system with a React + TypeScript frontend and a Spring Boot backend. View at: https://mybibliotek.netlify.app/ 
+A full-stack library management system with a React + TypeScript frontend and a Spring Boot backend. View at: https://mybibliotek.netlify.app/
 
 ## Features
 
@@ -19,7 +19,7 @@ A full-stack library management system with a React + TypeScript frontend and a 
 ## In Progress
 
 - **Pleasant mobile navigation experience**
-- **Enhanced dashboard analytics** with more detailed library insights
+- **More accurate dashboard analytics** with detailed library insights
 
 ## Architecture
 
