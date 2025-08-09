@@ -42,7 +42,7 @@ export default function DrawerAppBar(props: Props) {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        Library System
+        MyBibliotek
       </Typography>
       <Divider />
       <List>
@@ -108,7 +108,7 @@ export default function DrawerAppBar(props: Props) {
                 fontWeight: "500",
               }}
             >
-              Library System
+              MyBibliotek
             </Typography>
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
               {navItems.map((item) => (
@@ -126,16 +126,6 @@ export default function DrawerAppBar(props: Props) {
                 </Button>
               ))}
             </Box>
-            <IconButton
-              onClick={toggleTheme}
-              sx={{
-                ml: 2,
-                color: isDark ? "#fff" : "#212121",
-              }}
-              aria-label="toggle theme"
-            >
-              {isDark ? <LightModeIcon /> : <DarkModeIcon />}
-            </IconButton>
           </Toolbar>
         </AppBar>
         <nav>
