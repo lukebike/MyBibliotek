@@ -37,20 +37,36 @@ import type {
 import { useUserStore } from "../store/userStore";
 import { getUserGrowth } from "../hooks/getUserGrowth";
 import dayjs from "dayjs";
+import { useBookStore } from "../store/bookStore";
+import { useLoanStore } from "../store/loanStore";
+import { useAuthorStore } from "../store/authorStore";
 
 export default function Dashboard() {
   const theme = useTheme();
+  // LIST OF ENTITIES
+  const users = useUserStore((state) => state.users);
+  const books = useBookStore((state) => state.books);
+  const loans = useLoanStore((state) => state.loans);
+  const authors = useAuthorStore((state) => state.authors);
+  // STATS
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [popularBooks, setPopularBooks] = useState<PopularBook[]>([]);
   const [usageMetrics, setUsageMetrics] = useState<UsageMetric[]>([]);
   const [recentLoans, setRecentLoans] = useState<RecentLoan[]>([]);
   const [recentReturns, setRecentReturns] = useState<RecentReturn[]>([]);
+  // FETCH ENTITIES DATA
   const fetchUsers = useUserStore((state) => state.fetchUsers);
-  const users = useUserStore((state) => state.users);
+  const fetchBooks = useBookStore((state) => state.fetchBooks);
+  const fetchLoans = useLoanStore((state) => state.fetchLoans);
+  const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
+  // DATA COMPARISON
   const userGrowth = getUserGrowth(users);
 
   useEffect(() => {
     fetchUsers();
+    fetchBooks();
+    fetchLoans();
+    fetchAuthors();
     setStats({
       totalUsers: 1247,
       activeLoans: 342,
@@ -142,7 +158,7 @@ export default function Dashboard() {
         returnDate: "2024-01-20",
       },
     ]);
-  }, [fetchUsers]);
+  }, [fetchUsers, fetchBooks, fetchLoans, fetchAuthors]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -160,6 +176,12 @@ export default function Dashboard() {
         return theme.palette.text.secondary;
     }
   };
+
+  const returnedBooks = loans.filter((loan) => loan.returnedDate);
+  const activeLoans = loans.filter((loan) => !loan.returnedDate);
+  const overdueBooks = loans.filter(
+    (loans) => !loans.returnedDate && dayjs(loans.dueDate).isBefore(dayjs())
+  );
 
   if (!stats) {
     return (
@@ -222,7 +244,7 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
             title="Books Returned"
-            value={stats.booksReturned}
+            value={returnedBooks.length}
             growth={stats.returnGrowth}
             icon={<BookIcon />}
             color="#4caf50"
@@ -231,7 +253,7 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
             title="Total Authors"
-            value={stats.totalAuthors}
+            value={authors.length}
             growth={stats.authorGrowth}
             icon={<AuthorIcon />}
             color="#9c27b0"
@@ -242,7 +264,7 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
             title="Active Loans"
-            value={stats.activeLoans}
+            value={activeLoans.length}
             growth={stats.loanGrowth}
             icon={<LoanIcon />}
             color="#f57c00"
@@ -251,7 +273,7 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
             title="Overdue Books"
-            value={stats.overdueBooks}
+            value={overdueBooks.length}
             icon={<WarningIcon />}
             color="#f44336"
           />
@@ -270,7 +292,7 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
             title="Collection Size"
-            value={stats.collectionSize}
+            value={books.length}
             icon={<LibraryIcon />}
             color="#1976d2"
           />
