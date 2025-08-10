@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { darkTheme, lightTheme } from "../theme/themeStyles";
 import { ThemeContext } from "./ThemeContext";
+import { darkTheme, lightTheme } from "../theme/themeStyles";
 
 interface ThemeProviderProps {
   children: ReactNode;

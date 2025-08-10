@@ -40,6 +40,7 @@ import dayjs from "dayjs";
 import { useBookStore } from "../store/bookStore";
 import { useLoanStore } from "../store/loanStore";
 import { useAuthorStore } from "../store/authorStore";
+import { LoadingSpinner } from "../components/LoadingSpinner";
 
 export default function Dashboard() {
   const theme = useTheme();
@@ -48,6 +49,13 @@ export default function Dashboard() {
   const books = useBookStore((state) => state.books);
   const loans = useLoanStore((state) => state.loans);
   const authors = useAuthorStore((state) => state.authors);
+
+  //LOADING STATES
+  const usersLoading = useUserStore((state) => state.loading);
+  const booksLoading = useBookStore((state) => state.loading);
+  const loansLoading = useLoanStore((state) => state.loading);
+  const authorsLoading = useAuthorStore((state) => state.loading);
+
   // STATS
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [popularBooks, setPopularBooks] = useState<PopularBook[]>([]);
@@ -61,6 +69,15 @@ export default function Dashboard() {
   const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
   // DATA COMPARISON
   const userGrowth = getUserGrowth(users);
+
+  // LOADING CHECK
+  const isLoading =
+    usersLoading || booksLoading || loansLoading || authorsLoading;
+  const hasData =
+    users.length > 0 ||
+    books.length > 0 ||
+    loans.length > 0 ||
+    authors.length > 0;
 
   useEffect(() => {
     fetchUsers();
@@ -163,15 +180,14 @@ export default function Dashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "#1976d2";
+        return theme.palette.info.main;
       case "overdue":
-        return "#f57c00";
+        return theme.palette.warning.main;
       case "good":
-        return "#4caf50";
       case "excellent":
-        return "#4caf50";
+        return theme.palette.success.main;
       case "fair":
-        return "#ff9800";
+        return theme.palette.warning.main;
       default:
         return theme.palette.text.secondary;
     }
@@ -183,9 +199,14 @@ export default function Dashboard() {
     (loans) => !loans.returnedDate && dayjs(loans.dueDate).isBefore(dayjs())
   );
 
-  if (!stats) {
+  if (isLoading && !hasData) {
     return (
-      <Typography color={theme.palette.text.primary}>Loading...</Typography>
+      <Box>
+        <Typography variant="h4" textAlign={"center"}>
+          Loading, please wait...
+        </Typography>
+        <LoadingSpinner rows={15} />;
+      </Box>
     );
   }
 
@@ -243,18 +264,25 @@ export default function Dashboard() {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
-            title="Books Returned"
-            value={returnedBooks.length}
-            growth={stats.returnGrowth}
-            icon={<BookIcon />}
-            color="#4caf50"
+            title="Total Books"
+            value={books.length}
+            icon={<LibraryIcon />}
+            color={theme.palette.success.main}
           />
+          <Typography
+            variant="caption"
+            sx={{
+              color: theme.palette.text.secondary,
+              mt: 1,
+              display: "block",
+            }}
+          ></Typography>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
             title="Total Authors"
             value={authors.length}
-            growth={stats.authorGrowth}
+            growth={stats?.authorGrowth}
             icon={<AuthorIcon />}
             color="#9c27b0"
           />
@@ -265,9 +293,9 @@ export default function Dashboard() {
           <DashboardCard
             title="Active Loans"
             value={activeLoans.length}
-            growth={stats.loanGrowth}
+            growth={stats?.loanGrowth}
             icon={<LoanIcon />}
-            color="#f57c00"
+            color={theme.palette.warning.main}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -275,7 +303,7 @@ export default function Dashboard() {
             title="Overdue Books"
             value={overdueBooks.length}
             icon={<WarningIcon />}
-            color="#f44336"
+            color={theme.palette.error.main}
           />
           <Typography
             variant="caption"
@@ -291,21 +319,12 @@ export default function Dashboard() {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <DashboardCard
-            title="Collection Size"
-            value={books.length}
-            icon={<LibraryIcon />}
-            color="#1976d2"
+            title="Books Returned"
+            value={returnedBooks.length}
+            growth={stats?.returnGrowth}
+            icon={<BookIcon />}
+            color={theme.palette.success.main}
           />
-          <Typography
-            variant="caption"
-            sx={{
-              color: theme.palette.text.secondary,
-              mt: 1,
-              display: "block",
-            }}
-          >
-            Total books in library
-          </Typography>
         </Grid>
       </Grid>
       <Grid container spacing={3} sx={{ mb: 4 }}>

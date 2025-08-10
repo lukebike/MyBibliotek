@@ -126,6 +126,16 @@ export default function DrawerAppBar(props: Props) {
                 </Button>
               ))}
             </Box>
+            <IconButton
+              onClick={toggleTheme}
+              sx={{
+                ml: 2,
+                color: isDark ? "#fff" : "#212121",
+              }}
+              aria-label="toggle theme"
+            >
+              {isDark ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
           </Toolbar>
         </AppBar>
         <nav>
