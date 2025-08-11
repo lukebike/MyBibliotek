@@ -1,4 +1,4 @@
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 
 interface LoadingSpinnerProps {
   rows?: number;
@@ -6,6 +6,9 @@ interface LoadingSpinnerProps {
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ rows = 5 }) => (
   <Box sx={{ p: 3 }}>
+    <Typography variant="h4" textAlign={"center"}>
+      Loading, please wait...
+    </Typography>
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
       <Skeleton variant="text" sx={{ fontSize: "2rem", width: "200px" }} />
       <Skeleton variant="rectangular" width={120} height={36} />

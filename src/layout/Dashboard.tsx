@@ -200,14 +200,7 @@ export default function Dashboard() {
   );
 
   if (isLoading && !hasData) {
-    return (
-      <Box>
-        <Typography variant="h4" textAlign={"center"}>
-          Loading, please wait...
-        </Typography>
-        <LoadingSpinner rows={15} />;
-      </Box>
-    );
+    return <LoadingSpinner rows={15} />;
   }
 
   users.forEach((u) => {

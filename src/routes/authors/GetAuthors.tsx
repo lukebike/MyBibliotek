@@ -7,6 +7,7 @@ import { DataGridLayout } from "../../components/DataGridLayout";
 import { useSearch } from "../../hooks/useSearch";
 import { useAuthorStore } from "../../store/authorStore";
 import { fuseConfigs } from "../../config/fuseConfigs";
+import { LoadingSpinner } from "../../components/LoadingSpinner";
 
 export default function GetAuthors() {
   const { handleMenuOpen, AuthorMenu } = useAuthorActionsMenu();
@@ -25,7 +26,12 @@ export default function GetAuthors() {
       .catch((err) => console.error("Error fetching authors", err))
       .finally(() => setLoading(false));
   }, [setAuthors, setLoading]);
+
   const filteredAuthors = useSearch(authors, searchTerm, fuseConfigs.authors);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <DataGridLayout
