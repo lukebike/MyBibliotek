@@ -35,12 +35,14 @@ import type {
 } from "../types/DashboardStats";
 
 import { useUserStore } from "../store/userStore";
-import { getUserGrowth } from "../hooks/getUserGrowth";
+import { getNewUsers, getUserGrowth } from "../hooks/getUserGrowth";
 import dayjs from "dayjs";
 import { useBookStore } from "../store/bookStore";
 import { useLoanStore } from "../store/loanStore";
 import { useAuthorStore } from "../store/authorStore";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { getPopularBooks } from "../hooks/getPopularBooks";
+import { getNewBooks } from "../hooks/getNewBooks";
 
 export default function Dashboard() {
   const theme = useTheme();
@@ -97,26 +99,6 @@ export default function Dashboard() {
       returnGrowth: -3,
       authorGrowth: -5,
     });
-
-    setPopularBooks([
-      { id: 1, title: "The Great Gatsby", loans: 15, available: 2, total: 5 },
-      {
-        id: 2,
-        title: "To Kill a Mockingbird",
-        loans: 12,
-        available: 1,
-        total: 4,
-      },
-      { id: 3, title: "1984", loans: 10, available: 0, total: 3 },
-      { id: 4, title: "Pride and Prejudice", loans: 9, available: 3, total: 6 },
-    ]);
-
-    setUsageMetrics([
-      { label: "Books Checked Out", current: 342, total: 500 },
-      { label: "Active Members", current: 1247, total: 1500 },
-      { label: "Digital Resources", current: 156, total: 200 },
-      { label: "Study Rooms", current: 8, total: 12 },
-    ]);
 
     setRecentLoans([
       {
@@ -177,6 +159,38 @@ export default function Dashboard() {
     ]);
   }, [fetchUsers, fetchBooks, fetchLoans, fetchAuthors]);
 
+  useEffect(() => {
+    if (loans.length > 0) {
+      const calculatedPopularBooks = getPopularBooks(loans);
+      setPopularBooks(calculatedPopularBooks);
+    } else {
+      setPopularBooks([
+        {
+          id: 1,
+          title: "The Great Gatsby",
+          loans: 15,
+          available: 2,
+          total: 5,
+        },
+        {
+          id: 2,
+          title: "To Kill a Mockingbird",
+          loans: 12,
+          available: 1,
+          total: 4,
+        },
+        { id: 3, title: "1984", loans: 10, available: 0, total: 3 },
+        {
+          id: 4,
+          title: "Pride and Prejudice",
+          loans: 9,
+          available: 3,
+          total: 6,
+        },
+      ]);
+    }
+  }, [loans]);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
@@ -199,22 +213,39 @@ export default function Dashboard() {
     (loans) => !loans.returnedDate && dayjs(loans.dueDate).isBefore(dayjs())
   );
 
+  useEffect(() => {
+    setUsageMetrics([
+      { label: "New Users", current: getNewUsers(users), total: users.length },
+      { label: "New Books", current: getNewBooks(books), total: books.length },
+      {
+        label: "Active Loans",
+        current: activeLoans.length,
+        total: loans.length,
+      },
+      {
+        label: "Books Returned",
+        current: returnedBooks.length,
+        total: books.length,
+      },
+      {
+        label: "Overdue Books",
+        current: overdueBooks.length,
+        total: books.length,
+      },
+    ]);
+  }, [
+    activeLoans,
+    books,
+    overdueBooks,
+    userGrowth,
+    users,
+    returnedBooks,
+    loans,
+  ]);
+
   if (isLoading && !hasData) {
     return <LoadingSpinner rows={15} />;
   }
-
-  users.forEach((u) => {
-    const reg = dayjs(u.registrationDate);
-    console.log(
-      u.registrationDate,
-      "->",
-      reg.format("YYYY-MM-DD"),
-      "year:",
-      reg.year(),
-      "month:",
-      reg.month()
-    );
-  });
 
   return (
     <Box sx={{ p: 3, backgroundColor: theme.palette.background.default }}>
