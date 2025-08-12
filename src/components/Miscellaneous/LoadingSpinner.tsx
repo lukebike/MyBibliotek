@@ -1,8 +1,5 @@
 import { Box, Skeleton, Typography } from "@mui/material";
-
-interface LoadingSpinnerProps {
-  rows?: number;
-}
+import type { LoadingSpinnerProps } from "../../types/miscellaneous/LoadingSpinnerProps";
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ rows = 5 }) => (
   <Box sx={{ p: 3 }}>

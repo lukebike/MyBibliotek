@@ -1,12 +1,6 @@
 import React from "react";
 import { Box, LinearProgress, useTheme } from "@mui/material";
-
-interface ProgressBarProps {
-  value: number;
-  total: number;
-  color?: string;
-  height?: number;
-}
+import type { ProgressBarProps } from "../../types/miscellaneous/ProgressBar";
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   value,

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 
 import { useLoanActionsMenu } from "../../hooks/menus/useLoanMenu";
-import { getLoanColumns } from "../../components/GetLoanColumns";
+import { getLoanColumns } from "../../components/Datagrid/GetLoanColumns";
 
 import { useLoanStore } from "../../store/loanStore";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
-import { DataGridLayout } from "../../components/DataGridLayout";
+import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 
 const GetBooks: React.FC = () => {
   const loans = useLoanStore((state) => state.loans);

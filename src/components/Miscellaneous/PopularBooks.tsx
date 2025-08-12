@@ -1,19 +1,8 @@
 import { memo } from "react";
 import { Box, Typography, Paper, type Theme } from "@mui/material";
 import { ProgressBar } from "./ProgressBar";
-
-interface PopularBook {
-  id: number;
-  title: string;
-  loans: number;
-  available: number;
-  total: number;
-}
-
-interface PopularBooksSectionProps {
-  popularBooks: PopularBook[];
-  theme: Theme;
-}
+import type { PopularBook } from "../../types/books/PopularBook";
+import type { PopularBooksSectionProps } from "../../types/books/PopularBooksSection";
 
 const BookProgressItem = memo(
   ({ book, theme }: { book: PopularBook; theme: Theme }) => (

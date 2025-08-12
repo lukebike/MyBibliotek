@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../../api";
 
 import { useBookActionsMenu } from "../../hooks/menus/useBookMenu";
-import { getBookColumns } from "../../components/GetBookColumns";
+import { getBookColumns } from "../../components/Datagrid/GetBookColumns";
 
 import { useBookStore } from "../../store/bookStore";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
-import { DataGridLayout } from "../../components/DataGridLayout";
+import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 
 const GetBooks: React.FC = () => {
   const books = useBookStore((state) => state.books);

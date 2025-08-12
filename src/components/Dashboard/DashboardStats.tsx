@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Grid } from "@mui/material";
+import { Grid, type Theme } from "@mui/material";
 import { DashboardCard } from "./DashboardCard";
 import {
   People as PeopleIcon,
@@ -9,10 +9,10 @@ import {
   Warning as WarningIcon,
   LibraryBooks as LibraryIcon,
 } from "@mui/icons-material";
-import type { User } from "../types/users/User";
-import type { Book } from "../types/books/Book";
-import type { Author } from "../types/authors/Author";
-import type { Loan } from "../types/loans/Loan";
+import type { User } from "../../types/users/User";
+import type { Book } from "../../types/books/Book";
+import type { Author } from "../../types/authors/Author";
+import type { Loan } from "../../types/loans/Loan";
 
 interface DashboardStatsProps {
   users: User[];
@@ -22,7 +22,7 @@ interface DashboardStatsProps {
   activeLoans: number;
   overDueBooks: number;
   returnedBooks: number;
-  theme: any;
+  theme: Theme;
 }
 
 const DashboardStats = memo(

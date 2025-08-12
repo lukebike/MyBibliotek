@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
 import type { Author } from "../../types/authors/Author";
-import { getAuthorColumns } from "../../components/GetAuthorColumns";
+import { getAuthorColumns } from "../../components/Datagrid/GetAuthorColumns";
 import { useAuthorActionsMenu } from "../../hooks/menus/useAuthorMenu";
-import { DataGridLayout } from "../../components/DataGridLayout";
+import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 import { useSearch } from "../../hooks/useSearch";
 import { useAuthorStore } from "../../store/authorStore";
 import { fuseConfigs } from "../../config/fuseConfigs";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
+import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 
 export default function GetAuthors() {
   const { handleMenuOpen, AuthorMenu } = useAuthorActionsMenu();

@@ -6,18 +6,6 @@ export interface DashboardStats {
   overdueBooks: number;
   newMembers: number;
   collectionSize: number;
-  userGrowth: number;
-  loanGrowth: number;
-  returnGrowth: number;
-  authorGrowth: number;
-}
-
-export interface PopularBook {
-  id: number;
-  title: string;
-  loans: number;
-  available: number;
-  total: number;
 }
 
 export interface UsageMetric {

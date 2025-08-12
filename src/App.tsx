@@ -15,7 +15,7 @@ import GetLoans from "./routes/loans/GetLoans";
 import PostLoans from "./routes/loans/PostLoans";
 import { ThemeContextProvider } from "./context/ThemeContextProvider";
 import { useThemeContext } from "./hooks/useThemeContext";
-import { NotificationManager } from "./components/NotificationManager";
+import { NotificationManager } from "./components/Miscellaneous/NotificationManager";
 import Dashboard from "./layout/Dashboard";
 
 function AppContent() {

@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo } from "react";
 import { Box, useTheme } from "@mui/material";
 import { Grid } from "@mui/material";
 
-import type { DashboardStats } from "../types/DashboardStats";
+import type { DashboardStats } from "../types/miscellaneous/DashboardStats";
 
 import { useUserStore } from "../store/userStore";
 import { getNewUsers } from "../hooks/userUtils";
@@ -10,8 +10,8 @@ import { getNewUsers } from "../hooks/userUtils";
 import { useBookStore } from "../store/bookStore";
 import { useLoanStore } from "../store/loanStore";
 import { useAuthorStore } from "../store/authorStore";
-import { LoadingSpinner } from "../components/LoadingSpinner";
-import { DashboardHeader } from "../components/DashboardHeader";
+import { LoadingSpinner } from "../components/Miscellaneous/LoadingSpinner";
+import { DashboardHeader } from "../components/Dashboard/DashboardHeader";
 
 import { useStatusColor } from "../hooks/getStatusColors";
 import { getNewBooks, getPopularBooks } from "../hooks/bookUtils";
@@ -23,10 +23,18 @@ import {
   getReturnedBooks,
 } from "../hooks/loanUtils";
 
-const DashboardStats = lazy(() => import("../components/DashboardStats"));
-const PopularBooks = lazy(() => import("../components/PopularBooks"));
-const UsageMetricsSection = lazy(() => import("../components/UsageMetrics"));
-const RecentActivities = lazy(() => import("../components/RecentActivities"));
+const DashboardStats = lazy(
+  () => import("../components/Dashboard/DashboardStats")
+);
+const PopularBooks = lazy(
+  () => import("../components/Miscellaneous/PopularBooks")
+);
+const UsageMetricsSection = lazy(
+  () => import("../components/Miscellaneous/UsageMetrics")
+);
+const RecentActivities = lazy(
+  () => import("../components/Miscellaneous/RecentActivities")
+);
 
 export default function Dashboard() {
   const theme = useTheme();
@@ -44,7 +52,6 @@ export default function Dashboard() {
   const loansLoading = useLoanStore((state) => state.loading);
   const authorsLoading = useAuthorStore((state) => state.loading);
 
-  // STATS
   // FETCH ENTITIES DATA
   const fetchUsers = useUserStore((state) => state.fetchUsers);
   const fetchBooks = useBookStore((state) => state.fetchBooks);

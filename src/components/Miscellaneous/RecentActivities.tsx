@@ -16,25 +16,13 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/material";
 
-interface RecentLoan {
-  id: number;
-  user: { initials: string; name: string };
-  book: { title: string };
-  dueDate: string;
-  status: string;
-}
-
-interface RecentReturn {
-  id: number;
-  user: { initials: string; name: string };
-  book: { title: string };
-  returnDate: string;
-}
+import type { RecentReturnedLoan } from "../../types/loans/RecentReturnedLoan";
+import type { RecentLoan } from "../../types/loans/RecentLoan";
 
 interface RecentActivitiesProps {
   getStatusColor: (status: string) => string;
   recentLoans: RecentLoan[];
-  recentReturns: RecentReturn[];
+  recentReturns: RecentReturnedLoan[];
   theme: Theme;
 }
 
@@ -79,14 +67,14 @@ const RecentLoansTable = memo(
           </TableRow>
         </TableHead>
         <TableBody>
-          {loans.slice(0, 5).map((loan) => (
-            <TableRow key={loan.id} hover>
+          {loans.slice(0, 5).map((recentLoan) => (
+            <TableRow key={recentLoan.id} hover>
               <TableCell>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Avatar sx={{ width: 32, height: 32, fontSize: "0.875rem" }}>
-                    {loan.user.initials}
+                    {recentLoan.user.initials}
                   </Avatar>
-                  <Tooltip title={loan.user.name} arrow placement="top">
+                  <Tooltip title={recentLoan.user.name} arrow placement="top">
                     <Typography
                       variant="body2"
                       sx={{
@@ -98,13 +86,13 @@ const RecentLoansTable = memo(
                         cursor: "help",
                       }}
                     >
-                      {loan.user.name}
+                      {recentLoan.user.name}
                     </Typography>
                   </Tooltip>
                 </Box>
               </TableCell>
               <TableCell>
-                <Tooltip title={loan.book.title} arrow placement="top">
+                <Tooltip title={recentLoan.book.title} arrow placement="top">
                   <Typography
                     variant="body2"
                     sx={{
@@ -116,7 +104,7 @@ const RecentLoansTable = memo(
                       cursor: "help",
                     }}
                   >
-                    {loan.book.title}
+                    {recentLoan.book.title}
                   </Typography>
                 </Tooltip>
               </TableCell>
@@ -129,15 +117,15 @@ const RecentLoansTable = memo(
                     fontSize: "0.875rem",
                   }}
                 >
-                  {loan.dueDate}
+                  {recentLoan.dueDate}
                 </Typography>
               </TableCell>
               <TableCell>
                 <Chip
-                  label={loan.status}
+                  label={recentLoan.status}
                   size="small"
                   sx={{
-                    backgroundColor: getStatusColor(loan.status),
+                    backgroundColor: getStatusColor(recentLoan.status),
                     color: "white",
                     fontSize: "0.75rem",
                     fontWeight: 500,
@@ -153,7 +141,7 @@ const RecentLoansTable = memo(
 );
 
 const RecentReturnsTable = memo(
-  ({ returns, theme }: { returns: RecentReturn[]; theme: Theme }) => (
+  ({ loans, theme }: { loans: RecentReturnedLoan[]; theme: Theme }) => (
     <TableContainer>
       <Table size="small">
         <TableHead>
@@ -180,14 +168,14 @@ const RecentReturnsTable = memo(
           </TableRow>
         </TableHead>
         <TableBody>
-          {returns.slice(0, 5).map((returnItem) => (
-            <TableRow key={returnItem.id} hover>
+          {loans.slice(0, 5).map((returnedLoan) => (
+            <TableRow key={returnedLoan.id} hover>
               <TableCell>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Avatar sx={{ width: 32, height: 32, fontSize: "0.875rem" }}>
-                    {returnItem.user.initials}
+                    {returnedLoan.user.initials}
                   </Avatar>
-                  <Tooltip title={returnItem.user.name} arrow placement="top">
+                  <Tooltip title={returnedLoan.user.name} arrow placement="top">
                     <Typography
                       variant="body2"
                       sx={{
@@ -199,13 +187,13 @@ const RecentReturnsTable = memo(
                         cursor: "help",
                       }}
                     >
-                      {returnItem.user.name}
+                      {returnedLoan.user.name}
                     </Typography>
                   </Tooltip>
                 </Box>
               </TableCell>
               <TableCell>
-                <Tooltip title={returnItem.book.title} arrow placement="top">
+                <Tooltip title={returnedLoan.book.title} arrow placement="top">
                   <Typography
                     variant="body2"
                     sx={{
@@ -217,7 +205,7 @@ const RecentReturnsTable = memo(
                       cursor: "help",
                     }}
                   >
-                    {returnItem.book.title}
+                    {returnedLoan.book.title}
                   </Typography>
                 </Tooltip>
               </TableCell>
@@ -230,7 +218,7 @@ const RecentReturnsTable = memo(
                     fontSize: "0.875rem",
                   }}
                 >
-                  {returnItem.returnDate}
+                  {returnedLoan.returnDate}
                 </Typography>
               </TableCell>
             </TableRow>
@@ -312,7 +300,7 @@ const RecentActivities = memo(
           </Typography>
 
           {recentReturns.length > 0 ? (
-            <RecentReturnsTable returns={recentReturns} theme={theme} />
+            <RecentReturnsTable loans={recentReturns} theme={theme} />
           ) : (
             <Box sx={{ textAlign: "center", py: 4 }}>
               <Typography

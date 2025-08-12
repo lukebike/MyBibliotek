@@ -1,6 +1,6 @@
 import React from "react";
 import { Snackbar, Alert } from "@mui/material";
-import { useNotificationStore } from "../store/notificationStore";
+import { useNotificationStore } from "../../store/notificationStore";
 
 export const NotificationManager: React.FC = () => {
   const { notifications, removeNotification } = useNotificationStore();

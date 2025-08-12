@@ -2,17 +2,8 @@ import { memo } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { ProgressBar } from "./ProgressBar";
 import type { Theme } from "@mui/material";
-
-interface UsageMetric {
-  label: string;
-  current: number;
-  total: number;
-}
-
-interface UsageMetricsSectionProps {
-  usageMetrics: UsageMetric[];
-  theme: Theme;
-}
+import type { UsageMetric } from "../../types/miscellaneous/DashboardStats";
+import type { UsageMetricsSectionProps } from "../../types/miscellaneous/UsageMetricSection";
 
 const MetricItem = memo(
   ({ metric, theme }: { metric: UsageMetric; theme: Theme }) => {
