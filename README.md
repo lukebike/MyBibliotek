@@ -80,13 +80,13 @@ You can change this in `src/api.ts`.
 
 ## Tech Stack
 
-- [React](https://react.dev/) - Framework
-- [TypeScript](https://www.typescriptlang.org/) - Type safety
-- [Vite](https://vitejs.dev/) - Build tool and dev server
-- [Material UI](https://mui.com/) - UI component library
-- [Zustand](https://zustand-demo.pmnd.rs/) - State management
-- [Axios](https://axios-http.com/) - HTTP client
-- [React Hook Form](https://react-hook-form.com/) - Form handling
-- [Fuse.js](https://fusejs.io/) - Fuzzy search
-- [React Router](https://reactrouter.com/) - Client-side routing
-- [Day.js](https://day.js.org/) - Date manipulation for analytics
+- React 
+- TypeScript 
+- Vite
+- Material UI (UI Library)
+- Zustand (State Management)
+- Axios (HTTP Client)
+- React Hook Form (Form handling)
+- Fuse.js (Fuzzy search)
+- React Router (Client-side routing)
+- Day.js (Date manipulation for analytics)
