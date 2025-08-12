@@ -1,7 +1,7 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, type Theme } from "@mui/material";
 import { memo } from "react";
 
-export const DashboardHeader = memo(({ theme }: { theme: any }) => (
+export const DashboardHeader = memo(({ theme }: { theme: Theme }) => (
   <Box
     sx={{
       display: "flex",

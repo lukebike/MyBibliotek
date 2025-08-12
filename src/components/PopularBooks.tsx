@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, type Theme } from "@mui/material";
 import { ProgressBar } from "./ProgressBar";
 
 interface PopularBook {
@@ -12,11 +12,11 @@ interface PopularBook {
 
 interface PopularBooksSectionProps {
   popularBooks: PopularBook[];
-  theme: any;
+  theme: Theme;
 }
 
 const BookProgressItem = memo(
-  ({ book, theme }: { book: PopularBook; theme: any }) => (
+  ({ book, theme }: { book: PopularBook; theme: Theme }) => (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
         <Typography

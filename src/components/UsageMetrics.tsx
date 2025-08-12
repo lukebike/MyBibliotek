@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { ProgressBar } from "./ProgressBar";
+import type { Theme } from "@mui/material";
 
 interface UsageMetric {
   label: string;
@@ -10,11 +11,11 @@ interface UsageMetric {
 
 interface UsageMetricsSectionProps {
   usageMetrics: UsageMetric[];
-  theme: any;
+  theme: Theme;
 }
 
 const MetricItem = memo(
-  ({ metric, theme }: { metric: UsageMetric; theme: any }) => {
+  ({ metric, theme }: { metric: UsageMetric; theme: Theme }) => {
     const percentage =
       metric.total > 0 ? (metric.current / metric.total) * 100 : 0;
 

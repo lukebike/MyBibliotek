@@ -12,10 +12,10 @@ import {
   Avatar,
   Chip,
   Tooltip,
+  type Theme,
 } from "@mui/material";
 import { Grid } from "@mui/material";
 
-// Update the interfaces to match your utility function outputs
 interface RecentLoan {
   id: number;
   user: { initials: string; name: string };
@@ -35,7 +35,7 @@ interface RecentActivitiesProps {
   getStatusColor: (status: string) => string;
   recentLoans: RecentLoan[];
   recentReturns: RecentReturn[];
-  theme: any;
+  theme: Theme;
 }
 
 const RecentLoansTable = memo(
@@ -46,7 +46,7 @@ const RecentLoansTable = memo(
   }: {
     loans: RecentLoan[];
     getStatusColor: (status: string) => string;
-    theme: any;
+    theme: Theme;
   }) => (
     <TableContainer>
       <Table size="small">
@@ -153,7 +153,7 @@ const RecentLoansTable = memo(
 );
 
 const RecentReturnsTable = memo(
-  ({ returns, theme }: { returns: RecentReturn[]; theme: any }) => (
+  ({ returns, theme }: { returns: RecentReturn[]; theme: Theme }) => (
     <TableContainer>
       <Table size="small">
         <TableHead>
