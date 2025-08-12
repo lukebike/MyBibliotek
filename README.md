@@ -2,6 +2,41 @@
 
 A full-stack library management system with a React + TypeScript frontend and a Spring Boot backend. View at: https://mybibliotek.netlify.app/
 
+## Why Use This Website?
+
+### **Modern & Intuitive**
+
+- **Clean, responsive interface** built with Material UI that works seamlessly across desktop, tablet, and mobile devices
+- **Real-time dashboard** providing instant insights into library operations, user activity, and book popularity
+- **Dark/Light mode support** with persistent theme preferences for comfortable viewing in any environment
+
+### **Data-Driven Insights**
+
+- **Popular books tracking** to understand what books our customers love most
+- **Overdue management** with clear visual indicators for late book returns
+- **Growth metrics** to track our library's expansion over time
+
+### **Enhanced User Experience**
+
+- **Instant search** with fuzzy matching - find books, authors, or users even with partial or misspelled queries
+- **Skeleton loading states** provide smooth, professional loading experiences
+- **One-click actions** for common tasks like loan management and book returns
+- **Responsive design** that adapts beautifully to any screen size
+
+### **User-Friendly**
+
+- **Complete CRUD operations** for all entities (Users, Books, Authors, Loans) with intuitive forms
+- **Error handling** with clear feedback when something goes wrong
+
+### **Performance & Reliability**
+
+- **Client-side state management** with Zustand for lightning-fast interactions
+- **Optimized loading** with lazy-loaded components and efficient data fetching
+- **Modern tech stack** ensuring long-term maintainability and scalability
+- **Full TypeScript** implementation for robust, bug-free operation
+
+**Perfect for:** Public libraries, school libraries, corporate libraries, bookstores, or any organization that needs to track books and manage lending operations efficiently.
+
 ## Features
 
 - **User, Author, Book, and Loan CRUD operations** with full Create, Read, Update, Delete functionality
