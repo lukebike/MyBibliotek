@@ -2,8 +2,9 @@ import { memo } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import { ProgressBar } from "./ProgressBar";
 import type { Theme } from "@mui/material";
-import type { UsageMetric } from "../../types/miscellaneous/DashboardStats";
+
 import type { UsageMetricsSectionProps } from "../../types/miscellaneous/UsageMetricSection";
+import type { UsageMetric } from "../../types/miscellaneous/UsageMetric";
 
 const MetricItem = memo(
   ({ metric, theme }: { metric: UsageMetric; theme: Theme }) => {
