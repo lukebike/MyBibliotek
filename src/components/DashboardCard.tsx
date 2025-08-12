@@ -12,17 +12,10 @@ interface DashboardCardProps {
 export const DashboardCard: React.FC<DashboardCardProps> = ({
   title,
   value,
-  growth,
   icon,
   color = "#666",
 }) => {
   const theme = useTheme();
-
-  const formatGrowth = (growth: number) => {
-    const absGrowth = Math.abs(growth);
-    const action = growth >= 0 ? "increase" : "decrease";
-    return `${absGrowth.toFixed(1)}% ${action} this month`;
-  };
 
   return (
     <Paper
@@ -67,18 +60,6 @@ export const DashboardCard: React.FC<DashboardCardProps> = ({
       >
         {typeof value === "number" ? value.toLocaleString() : value}
       </Typography>
-
-      {growth !== undefined && (
-        <Typography
-          variant="caption"
-          sx={{
-            color: growth >= 0 ? "#4caf50" : "#f44336",
-            fontSize: "0.75rem",
-          }}
-        >
-          {formatGrowth(growth)}
-        </Typography>
-      )}
     </Paper>
   );
 };

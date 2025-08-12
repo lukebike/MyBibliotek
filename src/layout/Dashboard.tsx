@@ -1,51 +1,37 @@
-import { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Paper,
-  Chip,
-  Avatar,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-  useTheme,
-} from "@mui/material";
+import { lazy, Suspense, useEffect, useMemo } from "react";
+import { Box, useTheme } from "@mui/material";
 import { Grid } from "@mui/material";
-import {
-  People as PeopleIcon,
-  MenuBook as BookIcon,
-  Assignment as LoanIcon,
-  Person as AuthorIcon,
-  Warning as WarningIcon,
-  LibraryBooks as LibraryIcon,
-  Visibility as ViewIcon,
-} from "@mui/icons-material";
-import { DashboardCard } from "../components/DashboardCard";
-import { ProgressBar } from "../components/ProgressBar";
-import type {
-  DashboardStats,
-  PopularBook,
-  UsageMetric,
-  RecentLoan,
-  RecentReturn,
-} from "../types/DashboardStats";
+
+import type { DashboardStats } from "../types/DashboardStats";
 
 import { useUserStore } from "../store/userStore";
-import { getNewUsers, getUserGrowth } from "../hooks/getUserGrowth";
-import dayjs from "dayjs";
+import { getNewUsers } from "../hooks/userUtils";
+
 import { useBookStore } from "../store/bookStore";
 import { useLoanStore } from "../store/loanStore";
 import { useAuthorStore } from "../store/authorStore";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-import { getPopularBooks } from "../hooks/getPopularBooks";
-import { getNewBooks } from "../hooks/getNewBooks";
+import { DashboardHeader } from "../components/DashboardHeader";
+
+import { useStatusColor } from "../hooks/getStatusColors";
+import { getNewBooks, getPopularBooks } from "../hooks/bookUtils";
+import {
+  getActiveLoans,
+  getOverdueBooks,
+  getRecentLoans,
+  getRecentReturns,
+  getReturnedBooks,
+} from "../hooks/loanUtils";
+
+const DashboardStats = lazy(() => import("../components/DashboardStats"));
+const PopularBooks = lazy(() => import("../components/PopularBooks"));
+const UsageMetricsSection = lazy(() => import("../components/UsageMetrics"));
+const RecentActivities = lazy(() => import("../components/RecentActivities"));
 
 export default function Dashboard() {
   const theme = useTheme();
+  const getStatusColor = useStatusColor;
+
   // LIST OF ENTITIES
   const users = useUserStore((state) => state.users);
   const books = useBookStore((state) => state.books);
@@ -59,18 +45,19 @@ export default function Dashboard() {
   const authorsLoading = useAuthorStore((state) => state.loading);
 
   // STATS
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [popularBooks, setPopularBooks] = useState<PopularBook[]>([]);
-  const [usageMetrics, setUsageMetrics] = useState<UsageMetric[]>([]);
-  const [recentLoans, setRecentLoans] = useState<RecentLoan[]>([]);
-  const [recentReturns, setRecentReturns] = useState<RecentReturn[]>([]);
   // FETCH ENTITIES DATA
   const fetchUsers = useUserStore((state) => state.fetchUsers);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
   const fetchLoans = useLoanStore((state) => state.fetchLoans);
   const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
+  const newUsers = getNewUsers(users);
+  const newBooks = getNewBooks(books);
+  const activeLoans = getActiveLoans(loans);
+  const returnedBooks = getReturnedBooks(loans);
+  const overdueBooks = getOverdueBooks(loans);
+  const recentLoans = getRecentLoans(loans, 5);
+  const recentReturns = getRecentReturns(loans, 5);
   // DATA COMPARISON
-  const userGrowth = getUserGrowth(users);
 
   // LOADING CHECK
   const isLoading =
@@ -82,165 +69,58 @@ export default function Dashboard() {
     authors.length > 0;
 
   useEffect(() => {
-    fetchUsers();
-    fetchBooks();
-    fetchLoans();
-    fetchAuthors();
-    setStats({
-      totalUsers: 1247,
-      activeLoans: 342,
-      booksReturned: 89,
-      totalAuthors: 456,
-      overdueBooks: 23,
-      newMembers: 18,
-      collectionSize: 12847,
-      userGrowth: 12,
-      loanGrowth: -8,
-      returnGrowth: -3,
-      authorGrowth: -5,
-    });
+    const fetchAllData = async () => {
+      await Promise.all([
+        fetchUsers(),
+        fetchBooks(),
+        fetchLoans(),
+        fetchAuthors(),
+      ]);
+    };
 
-    setRecentLoans([
-      {
-        id: 1,
-        user: { initials: "AA", name: "Anna Andersson" },
-        book: { title: "The Great Gatsby" },
-        dueDate: "2024-01-25",
-        status: "active",
-      },
-      {
-        id: 2,
-        user: { initials: "EE", name: "Erik Eriksson" },
-        book: { title: "To Kill a Mockingbird" },
-        dueDate: "2024-01-23",
-        status: "overdue",
-      },
-      {
-        id: 3,
-        user: { initials: "MK", name: "Maria Karlsson" },
-        book: { title: "1984" },
-        dueDate: "2024-01-28",
-        status: "active",
-      },
-      {
-        id: 4,
-        user: { initials: "JJ", name: "Johan Johansson" },
-        book: { title: "Pride and Prejudice" },
-        dueDate: "2024-01-30",
-        status: "active",
-      },
-    ]);
-
-    setRecentReturns([
-      {
-        id: 1,
-        user: { initials: "ES", name: "Emma Svensson" },
-        book: { title: "The Catcher in the Rye" },
-        returnDate: "2024-01-20",
-      },
-      {
-        id: 2,
-        user: { initials: "LL", name: "Lars Larsson" },
-        book: { title: "Brave New World" },
-        returnDate: "2024-01-19",
-      },
-      {
-        id: 3,
-        user: { initials: "SN", name: "Sofia Nilsson" },
-        book: { title: "The Lord of the Rings" },
-        returnDate: "2024-01-18",
-      },
-      {
-        id: 4,
-        user: { initials: "SD", name: "sdadsa" },
-        book: { title: "Thadasd" },
-        returnDate: "2024-01-20",
-      },
-    ]);
+    fetchAllData();
   }, [fetchUsers, fetchBooks, fetchLoans, fetchAuthors]);
 
-  useEffect(() => {
-    if (loans.length > 0) {
-      const calculatedPopularBooks = getPopularBooks(loans);
-      setPopularBooks(calculatedPopularBooks);
-    } else {
-      setPopularBooks([
+  const processedData = useMemo(() => {
+    return {
+      popularBooks: loans.length > 0 ? getPopularBooks(loans) : [],
+      usageMetrics: [
         {
-          id: 1,
-          title: "The Great Gatsby",
-          loans: 15,
-          available: 2,
-          total: 5,
+          label: "New Users",
+          current: newUsers,
+          total: users.length,
         },
         {
-          id: 2,
-          title: "To Kill a Mockingbird",
-          loans: 12,
-          available: 1,
-          total: 4,
+          label: "New Books",
+          current: newBooks,
+          total: books.length,
         },
-        { id: 3, title: "1984", loans: 10, available: 0, total: 3 },
         {
-          id: 4,
-          title: "Pride and Prejudice",
-          loans: 9,
-          available: 3,
-          total: 6,
+          label: "Active Loans",
+          current: activeLoans,
+          total: loans.length,
         },
-      ]);
-    }
-  }, [loans]);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return theme.palette.info.main;
-      case "overdue":
-        return theme.palette.warning.main;
-      case "good":
-      case "excellent":
-        return theme.palette.success.main;
-      case "fair":
-        return theme.palette.warning.main;
-      default:
-        return theme.palette.text.secondary;
-    }
-  };
-
-  const returnedBooks = loans.filter((loan) => loan.returnedDate);
-  const activeLoans = loans.filter((loan) => !loan.returnedDate);
-  const overdueBooks = loans.filter(
-    (loans) => !loans.returnedDate && dayjs(loans.dueDate).isBefore(dayjs())
-  );
-
-  useEffect(() => {
-    setUsageMetrics([
-      { label: "New Users", current: getNewUsers(users), total: users.length },
-      { label: "New Books", current: getNewBooks(books), total: books.length },
-      {
-        label: "Active Loans",
-        current: activeLoans.length,
-        total: loans.length,
-      },
-      {
-        label: "Books Returned",
-        current: returnedBooks.length,
-        total: books.length,
-      },
-      {
-        label: "Overdue Books",
-        current: overdueBooks.length,
-        total: books.length,
-      },
-    ]);
+        {
+          label: "Books Returned",
+          current: returnedBooks,
+          total: books.length,
+        },
+        {
+          label: "Overdue Books",
+          current: overdueBooks,
+          total: books.length,
+        },
+      ],
+    };
   }, [
-    activeLoans,
-    books,
-    overdueBooks,
-    userGrowth,
-    users,
-    returnedBooks,
     loans,
+    newUsers,
+    users.length,
+    newBooks,
+    books.length,
+    activeLoans,
+    returnedBooks,
+    overdueBooks,
   ]);
 
   if (isLoading && !hasData) {
@@ -248,424 +128,42 @@ export default function Dashboard() {
   }
 
   return (
-    <Box sx={{ p: 3, backgroundColor: theme.palette.background.default }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 4,
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 600,
-              color: theme.palette.text.primary,
-              mb: 1,
-            }}
-          >
-            Dashboard
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: theme.palette.text.secondary }}
-          >
-            Welcome back! Here's what's happening in your library today.
-          </Typography>
-        </Box>
+    <Suspense fallback={<LoadingSpinner rows={15} />}>
+      <Box sx={{ p: 3, backgroundColor: theme.palette.background.default }}>
+        <DashboardHeader theme={theme} />
+
+        <DashboardStats
+          users={users}
+          books={books}
+          authors={authors}
+          loans={loans}
+          theme={theme}
+          activeLoans={activeLoans}
+          overDueBooks={overdueBooks}
+          returnedBooks={returnedBooks}
+        />
+
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <PopularBooks
+              popularBooks={processedData.popularBooks}
+              theme={theme}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <UsageMetricsSection
+              usageMetrics={processedData.usageMetrics}
+              theme={theme}
+            />
+          </Grid>
+        </Grid>
+        <RecentActivities
+          recentLoans={recentLoans}
+          recentReturns={recentReturns}
+          getStatusColor={getStatusColor}
+          theme={theme}
+        />
       </Box>
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <DashboardCard
-            title="Total Users"
-            value={users.length}
-            growth={userGrowth}
-            icon={<PeopleIcon />}
-            color="#1976d2"
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <DashboardCard
-            title="Total Books"
-            value={books.length}
-            icon={<LibraryIcon />}
-            color={theme.palette.success.main}
-          />
-          <Typography
-            variant="caption"
-            sx={{
-              color: theme.palette.text.secondary,
-              mt: 1,
-              display: "block",
-            }}
-          ></Typography>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <DashboardCard
-            title="Total Authors"
-            value={authors.length}
-            growth={stats?.authorGrowth}
-            icon={<AuthorIcon />}
-            color="#9c27b0"
-          />
-        </Grid>
-      </Grid>
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <DashboardCard
-            title="Active Loans"
-            value={activeLoans.length}
-            growth={stats?.loanGrowth}
-            icon={<LoanIcon />}
-            color={theme.palette.warning.main}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <DashboardCard
-            title="Overdue Books"
-            value={overdueBooks.length}
-            icon={<WarningIcon />}
-            color={theme.palette.error.main}
-          />
-          <Typography
-            variant="caption"
-            sx={{
-              color: "#f44336",
-              mt: 1,
-              display: "block",
-              textAlign: "center",
-            }}
-          >
-            Requires immediate attention
-          </Typography>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <DashboardCard
-            title="Books Returned"
-            value={returnedBooks.length}
-            growth={stats?.returnGrowth}
-            icon={<BookIcon />}
-            color={theme.palette.success.main}
-          />
-        </Grid>
-      </Grid>
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              border: `1px solid ${theme.palette.divider}`,
-              borderRadius: 2,
-              backgroundColor: theme.palette.background.paper,
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                mb: 3,
-                color: theme.palette.text.primary,
-              }}
-            >
-              Most Popular Books
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              {popularBooks.map((book) => (
-                <Box key={book.id}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 1,
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: 500,
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      {book.title}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: theme.palette.text.secondary }}
-                    >
-                      {book.loans} loans • {book.available}/{book.total}{" "}
-                      available
-                    </Typography>
-                  </Box>
-                  <ProgressBar value={book.loans} total={20} color="#1976d2" />
-                </Box>
-              ))}
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              border: `1px solid ${theme.palette.divider}`,
-              borderRadius: 2,
-              backgroundColor: theme.palette.background.paper,
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                mb: 3,
-                color: theme.palette.text.primary,
-              }}
-            >
-              Library Usage Overview
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              {usageMetrics.map((metric, index) => (
-                <Box key={index}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 1,
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: 500,
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      {metric.label}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: theme.palette.text.secondary }}
-                    >
-                      {metric.current}/{metric.total}
-                    </Typography>
-                  </Box>
-                  <ProgressBar
-                    value={metric.current}
-                    total={metric.total}
-                    color="#1976d2"
-                  />
-                </Box>
-              ))}
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              border: `1px solid ${theme.palette.divider}`,
-              borderRadius: 2,
-              backgroundColor: theme.palette.background.paper,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 3,
-              }}
-            >
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                }}
-              >
-                Recent Loans
-              </Typography>
-              <IconButton
-                size="small"
-                sx={{ color: theme.palette.text.secondary }}
-              >
-                <ViewIcon fontSize="small" />
-              </IconButton>
-            </Box>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      User
-                    </TableCell>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      Book
-                    </TableCell>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      Due Date
-                    </TableCell>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      Status
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {recentLoans.map((loan) => (
-                    <TableRow key={loan.id}>
-                      <TableCell>
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                        >
-                          <Avatar
-                            sx={{ width: 32, height: 32, fontSize: "0.875rem" }}
-                          >
-                            {loan.user.initials}
-                          </Avatar>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: theme.palette.text.primary }}
-                          >
-                            {loan.user.name}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: theme.palette.text.primary }}
-                        >
-                          {loan.book.title}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: theme.palette.text.primary }}
-                        >
-                          {loan.dueDate}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={loan.status}
-                          size="small"
-                          sx={{
-                            backgroundColor: getStatusColor(loan.status),
-                            color: "white",
-                            fontSize: "0.75rem",
-                          }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              border: `1px solid ${theme.palette.divider}`,
-              borderRadius: 2,
-              backgroundColor: theme.palette.background.paper,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 3,
-              }}
-            >
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                }}
-              >
-                Recent Returns
-              </Typography>
-              <IconButton
-                size="small"
-                sx={{ color: theme.palette.text.secondary }}
-              >
-                <ViewIcon fontSize="small" />
-              </IconButton>
-            </Box>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      User
-                    </TableCell>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      Book
-                    </TableCell>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      Return Date
-                    </TableCell>
-                    <TableCell sx={{ color: theme.palette.text.primary }}>
-                      Condition
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {recentReturns.map((returnItem) => (
-                    <TableRow key={returnItem.id}>
-                      <TableCell>
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
-                        >
-                          <Avatar
-                            sx={{ width: 32, height: 32, fontSize: "0.875rem" }}
-                          >
-                            {returnItem.user.initials}
-                          </Avatar>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: theme.palette.text.primary }}
-                          >
-                            {returnItem.user.name}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: theme.palette.text.primary }}
-                        >
-                          {returnItem.book.title}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          variant="body2"
-                          sx={{ color: theme.palette.text.primary }}
-                        >
-                          {returnItem.returnDate}
-                        </Typography>
-                      </TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </Grid>
-      </Grid>
-    </Box>
+    </Suspense>
   );
 }
