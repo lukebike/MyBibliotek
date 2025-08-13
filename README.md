@@ -18,15 +18,12 @@ A full-stack library management system with a React + TypeScript frontend and a 
 
 ### **Enhanced User Experience**
 
+- **Complete CRUD operations** for all entities (Users, Books, Authors, Loans) with intuitive forms
+- **Error handling** with clear feedback when something goes wrong
 - **Instant search** with fuzzy matching - find books, authors, or users even with partial or misspelled queries
 - **Skeleton loading states** provide smooth, professional loading experiences
 - **One-click actions** for common tasks like loan management and book returns
 - **Responsive design** that adapts beautifully to any screen size
-
-### **User-Friendly**
-
-- **Complete CRUD operations** for all entities (Users, Books, Authors, Loans) with intuitive forms
-- **Error handling** with clear feedback when something goes wrong
 
 ### **Performance & Reliability**
 
@@ -80,8 +77,8 @@ You can change this in `src/api.ts`.
 
 ## Tech Stack
 
-- React 
-- TypeScript 
+- React
+- TypeScript
 - Vite
 - Material UI (UI Library)
 - Zustand (State Management)

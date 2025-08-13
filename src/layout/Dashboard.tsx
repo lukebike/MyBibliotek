@@ -46,17 +46,13 @@ export default function Dashboard() {
   const loans = useLoanStore((state) => state.loans);
   const authors = useAuthorStore((state) => state.authors);
 
-  //LOADING STATES
-  const usersLoading = useUserStore((state) => state.loading);
-  const booksLoading = useBookStore((state) => state.loading);
-  const loansLoading = useLoanStore((state) => state.loading);
-  const authorsLoading = useAuthorStore((state) => state.loading);
-
   // FETCH ENTITIES DATA
   const fetchUsers = useUserStore((state) => state.fetchUsers);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
   const fetchLoans = useLoanStore((state) => state.fetchLoans);
   const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
+
+  // ANALYTICS
   const newUsers = getNewUsers(users);
   const newBooks = getNewBooks(books);
   const activeLoans = getActiveLoans(loans);
@@ -64,16 +60,6 @@ export default function Dashboard() {
   const overdueBooks = getOverdueBooks(loans);
   const recentLoans = getRecentLoans(loans, 5);
   const recentReturns = getRecentReturns(loans, 5);
-  // DATA COMPARISON
-
-  // LOADING CHECK
-  const isLoading =
-    usersLoading || booksLoading || loansLoading || authorsLoading;
-  const hasData =
-    users.length > 0 ||
-    books.length > 0 ||
-    loans.length > 0 ||
-    authors.length > 0;
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -91,33 +77,36 @@ export default function Dashboard() {
   const processedData = useMemo(() => {
     return {
       popularBooks: loans.length > 0 ? getPopularBooks(loans) : [],
-      usageMetrics: [
-        {
-          label: "New Users",
-          current: newUsers,
-          total: users.length,
-        },
-        {
-          label: "New Books",
-          current: newBooks,
-          total: books.length,
-        },
-        {
-          label: "Active Loans",
-          current: activeLoans,
-          total: loans.length,
-        },
-        {
-          label: "Books Returned",
-          current: returnedBooks,
-          total: books.length,
-        },
-        {
-          label: "Overdue Books",
-          current: overdueBooks,
-          total: books.length,
-        },
-      ],
+      usageMetrics:
+        loans.length > 0 || books.length > 0 || users.length > 0
+          ? [
+              {
+                label: "New Users",
+                current: newUsers,
+                total: users.length,
+              },
+              {
+                label: "New Books",
+                current: newBooks,
+                total: books.length,
+              },
+              {
+                label: "Active Loans",
+                current: activeLoans,
+                total: loans.length,
+              },
+              {
+                label: "Books Returned",
+                current: returnedBooks,
+                total: loans.length,
+              },
+              {
+                label: "Overdue Books",
+                current: overdueBooks,
+                total: books.length,
+              },
+            ]
+          : [],
     };
   }, [
     loans,
@@ -129,10 +118,6 @@ export default function Dashboard() {
     returnedBooks,
     overdueBooks,
   ]);
-
-  if (isLoading && !hasData) {
-    return <LoadingSpinner rows={15} />;
-  }
 
   return (
     <Suspense fallback={<LoadingSpinner rows={15} />}>
