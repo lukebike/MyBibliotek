@@ -129,6 +129,7 @@ export default function DrawerAppBar(props: Props) {
             <IconButton
               onClick={toggleTheme}
               sx={{
+                display: { xs: "none", sm: "inherit" },
                 ml: 2,
                 color: isDark ? "#fff" : "#212121",
               }}
