@@ -52,6 +52,11 @@ export default function Dashboard() {
   const authorsLoading = useAuthorStore((state) => state.loading);
   const isLoading =
     usersLoading || booksLoading || loansLoading || authorsLoading;
+  const hasNoData =
+    users.length === 0 &&
+    books.length === 0 &&
+    loans.length === 0 &&
+    authors.length === 0;
   // FETCH ENTITIES DATA
   const fetchUsers = useUserStore((state) => state.fetchUsers);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
@@ -128,11 +133,12 @@ export default function Dashboard() {
   return (
     <Suspense fallback={<LoadingSpinner rows={15} />}>
       <Box sx={{ p: 3, backgroundColor: theme.palette.background.default }}>
-        {isLoading && (
-          <Typography variant="h4" color="secondary" sx={{ mb: 2 }}>
-            Please wait a couple of minutes, our server is starting up..
-          </Typography>
-        )}
+        {isLoading ||
+          (hasNoData && (
+            <Typography variant="h4" color="secondary" sx={{ mb: 2 }}>
+              Please wait a couple of minutes, our server is starting up..
+            </Typography>
+          ))}
         <DashboardHeader theme={theme} />
         <DashboardStats
           users={users}
