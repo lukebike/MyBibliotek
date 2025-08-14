@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { Grid } from "@mui/material";
 
 import type { DashboardStats } from "../types/miscellaneous/DashboardStats";
@@ -45,7 +45,13 @@ export default function Dashboard() {
   const books = useBookStore((state) => state.books);
   const loans = useLoanStore((state) => state.loans);
   const authors = useAuthorStore((state) => state.authors);
-
+  // LOADING STATES
+  const usersLoading = useUserStore((state) => state.loading);
+  const booksLoading = useBookStore((state) => state.loading);
+  const loansLoading = useLoanStore((state) => state.loading);
+  const authorsLoading = useAuthorStore((state) => state.loading);
+  const isLoading =
+    usersLoading || booksLoading || loansLoading || authorsLoading;
   // FETCH ENTITIES DATA
   const fetchUsers = useUserStore((state) => state.fetchUsers);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
@@ -122,8 +128,12 @@ export default function Dashboard() {
   return (
     <Suspense fallback={<LoadingSpinner rows={15} />}>
       <Box sx={{ p: 3, backgroundColor: theme.palette.background.default }}>
+        {isLoading && (
+          <Typography variant="h4" color="secondary" sx={{ mb: 2 }}>
+            Please wait a couple of minutes, our server is starting up..
+          </Typography>
+        )}
         <DashboardHeader theme={theme} />
-
         <DashboardStats
           users={users}
           books={books}
