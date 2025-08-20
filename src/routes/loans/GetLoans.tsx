@@ -23,7 +23,7 @@ const GetBooks: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("/loans", {})
+      .get("/api/loans", {})
       .then((res) => {
         console.log(res.data);
         setLoans(res.data);

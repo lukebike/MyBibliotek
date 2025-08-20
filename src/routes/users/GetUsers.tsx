@@ -21,7 +21,7 @@ const GetUsers: React.FC = () => {
 
   useEffect(() => {
     api
-      .get<User[]>("/users")
+      .get<User[]>("/api/users")
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("Error fetching users: ", err))
       .finally(() => setLoading(false));
