@@ -26,7 +26,7 @@ export const useLoanStore = create<LoanState>((set) => ({
   fetchLoans: async () => {
     set({ loading: true });
     try {
-      const response = await api.get<Loan[]>("/loans");
+      const response = await api.get<Loan[]>("/api/loans");
       set({ loans: response.data, loading: false });
     } catch (err) {
       set({ loading: false });

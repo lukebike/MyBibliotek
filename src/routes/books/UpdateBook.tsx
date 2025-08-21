@@ -30,7 +30,7 @@ export default function UpdateBook() {
       reset(book);
     } else if (id) {
       api
-        .get<UpdateBook>(`/books/${id}`)
+        .get<UpdateBook>(`/api/books/${id}`)
         .then((response) => {
           reset(response.data);
         })

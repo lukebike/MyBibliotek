@@ -38,7 +38,7 @@ export default function UpdateAuthor() {
 
   const onSubmit: SubmitHandler<UpdateAuthor> = async (data) => {
     try {
-      const response = await api.put(`/author/${id}`, data);
+      const response = await api.put(`/api/author/${id}`, data);
       updateAuthor(response.data);
       showSuccess(`Author updated successfully!`);
       setTimeout(() => {

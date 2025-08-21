@@ -23,7 +23,7 @@ export default function PostBooks() {
 
   const onSubmit: SubmitHandler<CreateBook> = async (data) => {
     try {
-      const response = await api.post("/books", data);
+      const response = await api.post("/api/books", data);
       showSuccess(`Book ${response.data.title} created successfully!`);
 
       reset();

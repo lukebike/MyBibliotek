@@ -25,7 +25,7 @@ export const useAuthorStore = create<AuthorState>((set) => ({
   fetchAuthors: async () => {
     set({ loading: true });
     try {
-      const response = await api.get<Author[]>("/authors");
+      const response = await api.get<Author[]>("/api/authors");
       set({ authors: response.data, loading: false });
     } catch (err) {
       set({ loading: false });

@@ -28,7 +28,7 @@ export default function UpdateUser() {
       reset(user);
     } else if (id) {
       api
-        .get<UpdateUser>(`/users/${id}`)
+        .get<UpdateUser>(`/api/users/${id}`)
         .then((response) => {
           reset(response.data);
         })

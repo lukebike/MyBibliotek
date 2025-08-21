@@ -17,6 +17,7 @@ import { ThemeContextProvider } from "./context/ThemeContextProvider";
 import { useThemeContext } from "./hooks/useThemeContext";
 import { NotificationManager } from "./components/Miscellaneous/NotificationManager";
 import Dashboard from "./layout/Dashboard";
+import LoginForm from "./routes/login/LoginForm";
 
 function AppContent() {
   const { theme, isDark } = useThemeContext();
@@ -47,6 +48,7 @@ function AppContent() {
               <Route path="loans/post" element={<PostLoans />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/login" element={<LoginForm />} />
             </Routes>
           </Container>
           <NotificationManager />

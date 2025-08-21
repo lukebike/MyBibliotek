@@ -17,10 +17,17 @@ export default function PostUsers() {
 
   const onSubmit: SubmitHandler<LoginInfo> = async (data) => {
     try {
-      const response = await api.post("/login", data);
-      showSuccess(
-        `Logged in successfully, welcome back ${response.data.firstName}!`
-      );
+      const response = await api.post("/login", data, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      });
+      if (response.status === 200) {
+        console.log(response);
+        showSuccess(
+          `Logged in successfully, welcome back ${response.data.firstName}!`
+        );
+      }
+
       setTimeout(() => {
         navigate("/users");
       }, 1000);
@@ -28,9 +35,9 @@ export default function PostUsers() {
       showError(`Failed to login.`);
       if (typeof error === "object" && error !== null && "response" in error) {
         // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
-        console.error("Failed to create user:", error.response.data.errors);
+        console.error("Failed to login:", error.response.data.errors);
       } else {
-        console.error("Failed to create user:", error);
+        console.error("Failed to login:", error);
       }
     }
   };
@@ -95,7 +102,7 @@ export default function PostUsers() {
             },
           }}
         >
-          Submit Form!
+          Log In!
         </Button>
       </Box>
     </Paper>

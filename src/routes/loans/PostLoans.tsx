@@ -8,6 +8,7 @@ import type { CreateLoan } from "../../types/loans/CreateLoan";
 import { useUserStore } from "../../store/userStore";
 import { useBookStore } from "../../store/bookStore";
 import { useNotification } from "../../hooks/useNotification";
+import { useNavigate } from "react-router";
 
 export default function PostBooks() {
   const {
@@ -18,6 +19,7 @@ export default function PostBooks() {
   } = useForm<CreateLoan>();
 
   const { showSuccess, showError } = useNotification();
+  const navigate = useNavigate();
 
   const users = useUserStore((state) => state.users);
   const fetchUsers = useUserStore((state) => state.fetchUsers);
@@ -35,10 +37,18 @@ export default function PostBooks() {
 
   const onSubmit: SubmitHandler<CreateLoan> = async (data) => {
     try {
-      const response = await api.post("/loans", data);
-      showSuccess(`Loan for ${response.data.book.title} created successfully!`);
+      const response = await api.post("/api/loans", data);
+      const newBookLoan = books.find((book) => book.id === Number(data.bookId));
 
-      reset();
+      if (newBookLoan?.availableCopies == 0) {
+        showError("Book has no available copies, please wait for new stock");
+      } else {
+        showSuccess(
+          `Loan for ${response.data.book.title} created successfully!`
+        );
+        setTimeout(() => navigate("/loans"), 1500);
+        reset();
+      }
     } catch (error) {
       showError("Failed to create loan.");
       if (typeof error === "object" && error !== null && "response" in error) {
