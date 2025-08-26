@@ -37,7 +37,7 @@ export default function PostBooks() {
 
   const onSubmit: SubmitHandler<CreateLoan> = async (data) => {
     try {
-      const response = await api.post("/api/loans", data);
+      const response = await api.post("/loans", data);
       const newBookLoan = books.find((book) => book.id === Number(data.bookId));
 
       if (newBookLoan?.availableCopies == 0) {

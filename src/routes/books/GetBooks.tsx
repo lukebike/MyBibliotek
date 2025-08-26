@@ -23,7 +23,7 @@ const GetBooks: React.FC = () => {
 
   useEffect(() => {
     api
-      .get("/api/books", {
+      .get("/books", {
         params: {
           pageNumber: 0,
           pageSize: 100,

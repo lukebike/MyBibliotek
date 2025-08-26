@@ -19,7 +19,7 @@ export default function GetAuthors() {
   const columns = getAuthorColumns(handleMenuOpen);
   useEffect(() => {
     api
-      .get<Author[]>("/api/authors")
+      .get<Author[]>("/authors")
       .then((response) => {
         setAuthors(response.data);
       })

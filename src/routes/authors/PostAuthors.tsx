@@ -27,7 +27,7 @@ export default function PostUsers() {
   const onSubmit: SubmitHandler<CreateAuthor> = async (data) => {
     try {
       console.log(data);
-      const response = await api.post("/api/authors", data);
+      const response = await api.post("/authors", data);
       setSnackbarMsg(`Author ${response.data.firstName} created successfully!`);
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
