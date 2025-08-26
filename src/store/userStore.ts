@@ -8,6 +8,8 @@ type UserState = {
   setUsers: (users: User[]) => void;
   setLoading: (loading: boolean) => void;
   updateUser: (updatedUser: User) => void;
+  loggedIn: boolean;
+  setLoggedIn: (loggedIn: boolean) => void;
   fetchUsers: () => Promise<void>;
 };
 
@@ -32,4 +34,6 @@ export const useUserStore = create<UserState>((set) => ({
       console.error("Failed to fetch loans", err);
     }
   },
+  loggedIn: false,
+  setLoggedIn: (loggedIn) => set({ loggedIn }),
 }));

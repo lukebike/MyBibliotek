@@ -4,8 +4,9 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNotification } from "../../hooks/useNotification";
 import { useNavigate } from "react-router";
 import type { LoginInfo } from "../../types/miscellaneous/LoginInfo";
+import { useUserStore } from "../../store/userStore";
 
-export default function PostUsers() {
+export default function LoginForm() {
   const {
     register,
     handleSubmit,
@@ -14,6 +15,8 @@ export default function PostUsers() {
 
   const { showSuccess, showError } = useNotification();
   const navigate = useNavigate();
+  const loggedIn = useUserStore((state) => state.loggedIn);
+  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
 
   const onSubmit: SubmitHandler<LoginInfo> = async (data) => {
     try {
@@ -23,9 +26,8 @@ export default function PostUsers() {
       });
       if (response.status === 200) {
         console.log(response);
-        showSuccess(
-          `Logged in successfully, welcome back ${response.data.firstName}!`
-        );
+        showSuccess(`Logged in successfully, welcome back ${response.data}!`);
+        setLoggedIn(true);
       }
 
       setTimeout(() => {
@@ -42,7 +44,13 @@ export default function PostUsers() {
     }
   };
 
-  return (
+  return loggedIn ? (
+    <Paper>
+      <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
+        You are logged in, welcome back
+      </Typography>
+    </Paper>
+  ) : (
     <Paper elevation={3} sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
         Log In
@@ -62,10 +70,6 @@ export default function PostUsers() {
           variant="outlined"
           {...register("username", {
             required: "Username is required",
-            minLength: {
-              value: 3,
-              message: "Username must be longer than 2 characters",
-            },
           })}
           slotProps={{ input: { autoComplete: "email" } }}
           error={!!errors.username}
@@ -76,16 +80,6 @@ export default function PostUsers() {
           type="password"
           {...register("password", {
             required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-            pattern: {
-              value:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
-              message:
-                "Password must contain uppercase, lowercase, number, and special character",
-            },
           })}
           slotProps={{ input: { autoComplete: "current-password" } }}
           error={!!errors.password}

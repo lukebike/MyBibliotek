@@ -31,7 +31,7 @@ export default function PostBooks() {
       showError("Failed to create book.");
 
       if (typeof error === "object" && error !== null && "response" in error) {
-        // @ts-expect-error - error may have a 'response' property from Axios, but TypeScript does not know its type
+        // @ts-expect-error - Axios error type is unknown
         console.error("Failed to create book:", error.response.data.errors);
       } else {
         console.error("Failed to create book:", error);
