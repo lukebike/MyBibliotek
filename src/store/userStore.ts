@@ -27,7 +27,7 @@ export const useUserStore = create<UserState>((set) => ({
   fetchUsers: async () => {
     set({ loading: true });
     try {
-      const response = await api.get<User[]>("/api/users");
+      const response = await api.get<User[]>("/users");
       set({ users: response.data, loading: false });
     } catch (err) {
       set({ loading: false });
