@@ -24,6 +24,7 @@ export const getUserColumns = (
     width: 250,
   },
   { field: "registrationDate", headerName: "Registration Date", width: 200 },
+  { field: "role", headerName: "Role", width: 100 },
   {
     field: "actions",
     type: "actions",

@@ -17,8 +17,9 @@ export default function PostUsers() {
 
   const onSubmit: SubmitHandler<CreateUser> = async (data) => {
     try {
-      const response = await api.post("/api/users", data);
+      const response = await api.post("/users", data);
       showSuccess(`User ${response.data.firstName} created successfully!`);
+      console.log(response);
       setTimeout(() => {
         navigate("/users");
       }, 1000);
