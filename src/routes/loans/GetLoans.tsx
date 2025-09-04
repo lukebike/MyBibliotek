@@ -25,7 +25,6 @@ const GetBooks: React.FC = () => {
     api
       .get("/loans", {})
       .then((res) => {
-        console.log(res.data);
         setLoans(res.data);
       })
       .catch((err) => console.error("Error fetching loans: ", err))

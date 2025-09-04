@@ -22,6 +22,7 @@ import {
   getRecentReturns,
   getReturnedBooks,
 } from "../hooks/loanUtils";
+import { useNavigate } from "react-router-dom";
 
 const DashboardStats = lazy(
   () => import("../components/Dashboard/DashboardStats")
@@ -39,39 +40,26 @@ const RecentActivities = lazy(
 export default function Dashboard() {
   const theme = useTheme();
   const getStatusColor = useStatusColor;
+  const navigate = useNavigate();
 
   // LIST OF ENTITIES
   const users = useUserStore((state) => state.users);
   const books = useBookStore((state) => state.books);
   const loans = useLoanStore((state) => state.loans);
   const authors = useAuthorStore((state) => state.authors);
+  
   // LOADING STATES
   const usersLoading = useUserStore((state) => state.loading);
   const booksLoading = useBookStore((state) => state.loading);
   const loansLoading = useLoanStore((state) => state.loading);
   const authorsLoading = useAuthorStore((state) => state.loading);
-  const isLoading =
-    usersLoading || booksLoading || loansLoading || authorsLoading;
-  const hasNoData =
-    users.length === 0 &&
-    books.length === 0 &&
-    loans.length === 0 &&
-    authors.length === 0;
-  const showLoadingMessage = isLoading && hasNoData;
+  const isLoading = usersLoading || booksLoading || loansLoading || authorsLoading;
+  
   // FETCH ENTITIES DATA
   const fetchUsers = useUserStore((state) => state.fetchUsers);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
   const fetchLoans = useLoanStore((state) => state.fetchLoans);
   const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
-
-  // ANALYTICS
-  const newUsers = getNewUsers(users);
-  const newBooks = getNewBooks(books);
-  const activeLoans = getActiveLoans(loans);
-  const returnedBooks = getReturnedBooks(loans);
-  const overdueBooks = getOverdueBooks(loans);
-  const recentLoans = getRecentLoans(loans, 5);
-  const recentReturns = getRecentReturns(loans, 5);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -86,50 +74,73 @@ export default function Dashboard() {
     fetchAllData();
   }, [fetchUsers, fetchBooks, fetchLoans, fetchAuthors]);
 
+  // Calculate everything inside useMemo with proper safety checks
   const processedData = useMemo(() => {
+    // Create safe arrays with fallbacks
+    const safeUsers = Array.isArray(users) ? users : [];
+    const safeBooks = Array.isArray(books) ? books : [];
+    const safeLoans = Array.isArray(loans) ? loans : [];
+    const safeAuthors = Array.isArray(authors) ? authors : [];
+
+    // ANALYTICS - using safe arrays
+    const newUsers = getNewUsers(safeUsers);
+    const newBooks = getNewBooks(safeBooks);
+    const activeLoans = getActiveLoans(safeLoans);
+    const returnedBooks = getReturnedBooks(safeLoans);
+    const overdueBooks = getOverdueBooks(safeLoans);
+    const recentLoans = getRecentLoans(safeLoans, 5);
+    const recentReturns = getRecentReturns(safeLoans, 5);
+
     return {
-      popularBooks: loans.length > 0 ? getPopularBooks(loans) : [],
-      usageMetrics:
-        loans.length > 0 || books.length > 0 || users.length > 0
-          ? [
-              {
-                label: "New Users",
-                current: newUsers,
-                total: users.length,
-              },
-              {
-                label: "New Books",
-                current: newBooks,
-                total: books.length,
-              },
-              {
-                label: "Active Loans",
-                current: activeLoans,
-                total: loans.length,
-              },
-              {
-                label: "Books Returned",
-                current: returnedBooks,
-                total: loans.length,
-              },
-              {
-                label: "Overdue Books",
-                current: overdueBooks,
-                total: books.length,
-              },
-            ]
-          : [],
+      safeUsers,
+      safeBooks,
+      safeLoans,
+      safeAuthors,
+      analytics: {
+        newUsers,
+        newBooks,
+        activeLoans,
+        returnedBooks,
+        overdueBooks,
+        recentLoans,
+        recentReturns,
+      },
+      popularBooks: safeLoans.length > 0 ? getPopularBooks(safeLoans) : [],
+      usageMetrics: [
+        {
+          label: "New Users",
+          current: newUsers,
+          total: safeUsers.length,
+        },
+        {
+          label: "New Books",
+          current: newBooks,
+          total: safeBooks.length,
+        },
+        {
+          label: "Active Loans",
+          current: activeLoans,
+          total: safeLoans.length,
+        },
+        {
+          label: "Books Returned",
+          current: returnedBooks,
+          total: safeLoans.length,
+        },
+        {
+          label: "Overdue Books",
+          current: overdueBooks,
+          total: safeBooks.length,
+        },
+      ],
     };
-  }, [
-    loans,
-    newUsers,
-    users.length,
-    newBooks,
-    books.length,
-    activeLoans,
-    returnedBooks,
-    overdueBooks,
-  ]);
+  }, [users, books, loans, authors]);
+
+  const hasNoData = processedData.safeUsers.length === 0 && 
+                   processedData.safeBooks.length === 0 && 
+                   processedData.safeLoans.length === 0 && 
+                   processedData.safeAuthors.length === 0;
+  const showLoadingMessage = isLoading && hasNoData;
 
   return (
     <Suspense fallback={<LoadingSpinner rows={15} />}>
@@ -141,14 +152,14 @@ export default function Dashboard() {
         )}
         <DashboardHeader theme={theme} />
         <DashboardStats
-          users={users}
-          books={books}
-          authors={authors}
-          loans={loans}
+          users={processedData.safeUsers}
+          books={processedData.safeBooks}
+          authors={processedData.safeAuthors}
+          loans={processedData.safeLoans}
           theme={theme}
-          activeLoans={activeLoans}
-          overDueBooks={overdueBooks}
-          returnedBooks={returnedBooks}
+          activeLoans={processedData.analytics.activeLoans}
+          overDueBooks={processedData.analytics.overdueBooks}
+          returnedBooks={processedData.analytics.returnedBooks}
         />
 
         <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -166,8 +177,8 @@ export default function Dashboard() {
           </Grid>
         </Grid>
         <RecentActivities
-          recentLoans={recentLoans}
-          recentReturns={recentReturns}
+          recentLoans={processedData.analytics.recentLoans}
+          recentReturns={processedData.analytics.recentReturns}
           getStatusColor={getStatusColor}
           theme={theme}
         />

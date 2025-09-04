@@ -124,6 +124,7 @@ export const useLoanActionsMenu = () => {
   };
 
   const LoanMenu = () => {
+    if(!selectedLoanId) return null;
     const selectedLoan = loans.find((loan: Loan) => loan.id === selectedLoanId);
     const isReturned = selectedLoan?.returnedDate !== null;
 

@@ -19,8 +19,10 @@ import { NotificationManager } from "./components/Miscellaneous/NotificationMana
 import Dashboard from "./layout/Dashboard";
 import LoginForm from "./routes/login/LoginForm";
 
+
 function AppContent() {
   const { theme, isDark } = useThemeContext();
+ 
 
   return (
     <ThemeProvider theme={theme}>

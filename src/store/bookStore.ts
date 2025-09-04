@@ -25,7 +25,7 @@ export const useBookStore = create<BookState>((set) => ({
   fetchBooks: async () => {
     set({ loading: true });
     try {
-      const response = await api.get("/api/books", {
+      const response = await api.get("/books", {
         params: {
           pageNumber: 0,
           pageSize: 100,

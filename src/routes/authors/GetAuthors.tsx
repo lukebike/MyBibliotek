@@ -8,6 +8,7 @@ import { useSearch } from "../../hooks/useSearch";
 import { useAuthorStore } from "../../store/authorStore";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
+import { useNavigate } from "react-router";
 
 export default function GetAuthors() {
   const { handleMenuOpen, AuthorMenu } = useAuthorActionsMenu();
@@ -17,19 +18,26 @@ export default function GetAuthors() {
   const setLoading = useAuthorStore((state) => state.setLoading);
   const [searchTerm, setSearchTerm] = useState("");
   const columns = getAuthorColumns(handleMenuOpen);
+  const navigate = useNavigate();
   useEffect(() => {
     api
       .get<Author[]>("/authors")
       .then((response) => {
         setAuthors(response.data);
       })
-      .catch((err) => console.error("Error fetching authors", err))
+      .catch((err) => {
+        console.error("Error fetching authors", err);
+        if(err.response?.status === 401){
+          navigate("/login")
+        }
+      })
       .finally(() => setLoading(false));
-  }, [setAuthors, setLoading]);
+  }, [setAuthors, setLoading, navigate]);
 
+ 
   const filteredAuthors = useSearch(authors, searchTerm, fuseConfigs.authors);
 
-  if (loading) {
+  if (loading || !authors) {
     return <LoadingSpinner />;
   }
 
