@@ -22,7 +22,6 @@ import {
   getRecentReturns,
   getReturnedBooks,
 } from "../hooks/loanUtils";
-import { useNavigate } from "react-router-dom";
 
 const DashboardStats = lazy(
   () => import("../components/Dashboard/DashboardStats")
@@ -40,7 +39,6 @@ const RecentActivities = lazy(
 export default function Dashboard() {
   const theme = useTheme();
   const getStatusColor = useStatusColor;
-  const navigate = useNavigate();
 
   // LIST OF ENTITIES
   const users = useUserStore((state) => state.users);
