@@ -20,13 +20,16 @@ export default function LoginForm() {
 
   const onSubmit: SubmitHandler<LoginInfo> = async (data) => {
     try {
-      const response = await api.post("/login", data, {
+      const response = await api.post("/auth/login", data, {
         withCredentials: true,
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: { "Content-Type": "application/json" },
       });
+      console.log(data);
       if (response.status === 200) {
+        localStorage.setItem("jwt", response.data.token);
+        api.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("jwt")}`;
         console.log(response);
-        showSuccess(`Logged in successfully, welcome back ${response.data}!`);
+        showSuccess(`Logged in successfully, welcome back ${response.data.username}!`);
         setLoggedIn(true);
       }
 
