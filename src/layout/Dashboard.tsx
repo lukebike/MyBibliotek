@@ -71,16 +71,15 @@ export default function Dashboard() {
 
     fetchAllData();
   }, [fetchUsers, fetchBooks, fetchLoans, fetchAuthors]);
-
-  // Calculate everything inside useMemo with proper safety checks
+  
   const processedData = useMemo(() => {
-    // Create safe arrays with fallbacks
+    // SAFETY CHECKS
     const safeUsers = Array.isArray(users) ? users : [];
     const safeBooks = Array.isArray(books) ? books : [];
     const safeLoans = Array.isArray(loans) ? loans : [];
     const safeAuthors = Array.isArray(authors) ? authors : [];
 
-    // ANALYTICS - using safe arrays
+    // ANALYTICS 
     const newUsers = getNewUsers(safeUsers);
     const newBooks = getNewBooks(safeBooks);
     const activeLoans = getActiveLoans(safeLoans);
