@@ -12,7 +12,7 @@ type LoanState = {
   fetchLoans: () => Promise<void>;
 };
 
-export const useLoanStore = create<LoanState>((set) => ({
+export const useLoanStore = create<LoanState>((set, get) => ({
   loans: [],
   loading: true,
   setLoans: (loans) => set({ loans }),
@@ -24,6 +24,11 @@ export const useLoanStore = create<LoanState>((set) => ({
       ),
     })),
   fetchLoans: async () => {
+    const state = get();
+    if (state.loans.length > 0) {
+      return;
+    }
+    
     set({ loading: true });
     try {
       const response = await api.get<Loan[]>("/loans");

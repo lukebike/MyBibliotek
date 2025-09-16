@@ -61,16 +61,21 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      await Promise.all([
-        fetchUsers(),
-        fetchBooks(),
-        fetchLoans(),
-        fetchAuthors(),
-      ]);
+      const promises = [];
+      
+      // Only fetch if stores are empty
+      if (users.length === 0) promises.push(fetchUsers());
+      if (books.length === 0) promises.push(fetchBooks());
+      if (loans.length === 0) promises.push(fetchLoans());
+      if (authors.length === 0) promises.push(fetchAuthors());
+      
+      if (promises.length > 0) {
+        await Promise.all(promises);
+      }
     };
 
     fetchAllData();
-  }, [fetchUsers, fetchBooks, fetchLoans, fetchAuthors]);
+  }, [users.length, books.length, loans.length, authors.length, fetchUsers, fetchBooks, fetchLoans, fetchAuthors]);
   
   const processedData = useMemo(() => {
     // SAFETY CHECKS

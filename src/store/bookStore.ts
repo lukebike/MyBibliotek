@@ -11,7 +11,7 @@ type BookState = {
   fetchBooks: () => Promise<void>;
 };
 
-export const useBookStore = create<BookState>((set) => ({
+export const useBookStore = create<BookState>((set, get) => ({
   books: [],
   loading: true,
   setBooks: (books) => set({ books }),
@@ -23,6 +23,11 @@ export const useBookStore = create<BookState>((set) => ({
       ),
     })),
   fetchBooks: async () => {
+    const state = get();
+    if (state.books.length > 0) {
+      return;
+    }
+    
     set({ loading: true });
     try {
       const response = await api.get("/books", {

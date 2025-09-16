@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import api from "../../api";
-
 import { useLoanActionsMenu } from "../../hooks/menus/useLoanMenu";
 import { getLoanColumns } from "../../components/Datagrid/GetLoanColumns";
-
 import { useLoanStore } from "../../store/loanStore";
 import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { fuseConfigs } from "../../config/fuseConfigs";
@@ -13,23 +10,18 @@ import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 const GetBooks: React.FC = () => {
   const loans = useLoanStore((state) => state.loans);
   const loading = useLoanStore((state) => state.loading);
-  const setLoans = useLoanStore((state) => state.setLoans);
   const setLoading = useLoanStore((state) => state.setLoading);
-
+  const fetchLoans = useLoanStore((state) => state.fetchLoans);
   const [searchTerm, setSearchTerm] = useState("");
 
   const { handleMenuOpen, LoanMenu } = useLoanActionsMenu();
   const columns = getLoanColumns(handleMenuOpen);
 
   useEffect(() => {
-    api
-      .get("/loans", {})
-      .then((res) => {
-        setLoans(res.data);
-      })
-      .catch((err) => console.error("Error fetching loans: ", err))
-      .finally(() => setLoading(false));
-  }, [setLoans, setLoading]);
+    if(loans.length === 0){
+      fetchLoans().catch((err) => console.error("Error fetching loans: ", err)).finally(() => setLoading(false));
+    }
+  }, [loans.length, fetchLoans, setLoading]);
 
   const filteredLoans = useSearch(loans, searchTerm, fuseConfigs.loans);
 

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import api from "../../api";
-import type { Author } from "../../types/authors/Author";
 import { getAuthorColumns } from "../../components/Datagrid/GetAuthorColumns";
 import { useAuthorActionsMenu } from "../../hooks/menus/useAuthorMenu";
 import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
@@ -14,25 +12,20 @@ export default function GetAuthors() {
   const { handleMenuOpen, AuthorMenu } = useAuthorActionsMenu();
   const authors = useAuthorStore((state) => state.authors);
   const loading = useAuthorStore((state) => state.loading);
-  const setAuthors = useAuthorStore((state) => state.setAuthors);
-  const setLoading = useAuthorStore((state) => state.setLoading);
+  const fetchAuthors = useAuthorStore((state) => state.fetchAuthors);
   const [searchTerm, setSearchTerm] = useState("");
   const columns = getAuthorColumns(handleMenuOpen);
   const navigate = useNavigate();
   useEffect(() => {
-    api
-      .get<Author[]>("/authors")
-      .then((response) => {
-        setAuthors(response.data);
-      })
-      .catch((err) => {
+    if (authors.length === 0) {
+      fetchAuthors().catch((err) => {
         console.error("Error fetching authors", err);
         if(err.response?.status === 401){
           navigate("/login")
         }
-      })
-      .finally(() => setLoading(false));
-  }, [setAuthors, setLoading, navigate]);
+      });
+    }
+  }, [authors.length, fetchAuthors, navigate]);
 
  
   const filteredAuthors = useSearch(authors, searchTerm, fuseConfigs.authors);

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import api from "../../api";
-import type { User } from "../../types/users/User";
 import { getUserColumns } from "../../components/Datagrid/GetUserColumns";
 import { useUserActionsMenu } from "../../hooks/menus/useUserMenu";
 import { useUserStore } from "../../store/userStore";
@@ -12,20 +10,17 @@ import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 const GetUsers: React.FC = () => {
   const users = useUserStore((state) => state.users);
   const loading = useUserStore((state) => state.loading);
-  const setUsers = useUserStore((state) => state.setUsers);
   const setLoading = useUserStore((state) => state.setLoading);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const fetchUsers = useUserStore((state) => state.fetchUsers);
   const { handleMenuOpen, UserMenu } = useUserActionsMenu();
   const columns = getUserColumns(handleMenuOpen);
 
   useEffect(() => {
-    api
-      .get<User[]>("/users")
-      .then((res) => setUsers(res.data))
-      .catch((err) => console.error("Error fetching users: ", err))
-      .finally(() => setLoading(false));
-  }, [setUsers, setLoading]);
+    if (users.length === 0) {
+      fetchUsers().catch((err) => console.error("Error fetching users: ", err)).finally(() => setLoading(false));
+    }
+  }, [users.length, fetchUsers, setLoading]);
 
   const filteredUsers = useSearch(users, searchTerm, fuseConfigs.users);
 

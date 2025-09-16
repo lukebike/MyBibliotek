@@ -27,7 +27,6 @@ export default function LoginForm() {
       console.log(data);
       if (response.status === 200) {
         localStorage.setItem("jwt", response.data.token);
-        api.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("jwt")}`;
         console.log(response);
         showSuccess(`Logged in successfully, welcome back ${response.data.username}!`);
         setLoggedIn(true);

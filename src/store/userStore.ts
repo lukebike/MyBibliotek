@@ -13,7 +13,7 @@ type UserState = {
   fetchUsers: () => Promise<void>;
 };
 
-export const useUserStore = create<UserState>((set) => ({
+export const useUserStore = create<UserState>((set, get) => ({
   users: [],
   loading: true,
   setUsers: (users) => set({ users }),
@@ -25,6 +25,11 @@ export const useUserStore = create<UserState>((set) => ({
       ),
     })),
   fetchUsers: async () => {
+    const state = get();
+    if (state.users.length > 0) {
+      return;
+    }
+    
     set({ loading: true });
     try {
       const response = await api.get<User[]>("/users");
