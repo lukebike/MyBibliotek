@@ -24,12 +24,16 @@ export default function PostUsers() {
         navigate("/users");
       }, 1000);
     } catch (error) {
-      showError("Failed to create user.");
       if (typeof error === "object" && error !== null && "response" in error) {
         // @ts-expect-error - Axios error type is unknown
-        console.error("Failed to create user:", error.response.data.errors);
-      } else {
-        console.error("Failed to create user:", error);
+        if(error.response.status === 400) {
+          showError("Email already in use.");
+        }
+        else {
+                  // @ts-expect-error - Axios error type is unknown
+
+        showError("Failed to create user:", error.response.data.errors);
+        }
       }
     }
   };
@@ -116,10 +120,7 @@ export default function PostUsers() {
           variant="contained"
           sx={{
             mt: 2,
-            backgroundColor: "#19bfcf",
-            "&:hover": {
-              backgroundColor: "#14959c",
-            },
+            backgroundColor: "primary",
           }}
         >
           Submit Form!

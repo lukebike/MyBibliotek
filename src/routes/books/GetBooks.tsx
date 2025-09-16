@@ -7,12 +7,14 @@ import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
 import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
+import { useNavigate } from "react-router";
 
 const GetBooks: React.FC = () => {
   const books = useBookStore((state) => state.books);
   const loading = useBookStore((state) => state.loading);
   const fetchBooks = useBookStore((state) => state.fetchBooks);
   const setLoading = useBookStore((state) => state.setLoading);
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -28,6 +30,7 @@ const GetBooks: React.FC = () => {
   const filteredBooks = useSearch(books, searchTerm, fuseConfigs.books);
 
   if (loading) return <LoadingSpinner />;
+  if(!localStorage.getItem("jwt")) navigate("/login");
 
   return (
     <DataGridLayout

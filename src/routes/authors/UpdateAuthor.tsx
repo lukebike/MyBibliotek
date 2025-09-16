@@ -110,11 +110,7 @@ export default function UpdateAuthor() {
           variant="contained"
           sx={{
             mt: 2,
-            backgroundColor: "#19bfcf",
-            "&:hover": {
-              backgroundColor: "#14959c",
-            },
-          }}
+            backgroundColor: "primary"}}
         >
           Update Author!
         </Button>

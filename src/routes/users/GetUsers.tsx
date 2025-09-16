@@ -6,12 +6,14 @@ import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
 import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
+import { useNavigate } from "react-router";
 
 const GetUsers: React.FC = () => {
   const users = useUserStore((state) => state.users);
   const loading = useUserStore((state) => state.loading);
   const setLoading = useUserStore((state) => state.setLoading);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   const fetchUsers = useUserStore((state) => state.fetchUsers);
   const { handleMenuOpen, UserMenu } = useUserActionsMenu();
   const columns = getUserColumns(handleMenuOpen);
@@ -25,6 +27,7 @@ const GetUsers: React.FC = () => {
   const filteredUsers = useSearch(users, searchTerm, fuseConfigs.users);
 
   if (loading) return <LoadingSpinner />;
+  if(!localStorage.getItem("jwt")) navigate("/login")
 
   return (
     <DataGridLayout

@@ -138,10 +138,7 @@ export default function PostBooks() {
           disabled={isSubmitting}
           sx={{
             mt: 2,
-            backgroundColor: "#19bfcf",
-            "&:hover": {
-              backgroundColor: "#14959c",
-            },
+            backgroundColor: "primary",
           }}
         >
           Submit Form!

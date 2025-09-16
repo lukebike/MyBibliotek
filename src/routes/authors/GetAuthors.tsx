@@ -20,9 +20,6 @@ export default function GetAuthors() {
     if (authors.length === 0) {
       fetchAuthors().catch((err) => {
         console.error("Error fetching authors", err);
-        if(err.response?.status === 401){
-          navigate("/login")
-        }
       });
     }
   }, [authors.length, fetchAuthors, navigate]);
@@ -33,6 +30,7 @@ export default function GetAuthors() {
   if (loading || !authors) {
     return <LoadingSpinner />;
   }
+  if(!localStorage.getItem("jwt")) navigate("/login");
 
   return (
     <DataGridLayout

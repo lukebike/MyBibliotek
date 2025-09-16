@@ -6,6 +6,7 @@ import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
 import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
+import { useNavigate } from "react-router-dom";
 
 const GetBooks: React.FC = () => {
   const loans = useLoanStore((state) => state.loans);
@@ -13,7 +14,7 @@ const GetBooks: React.FC = () => {
   const setLoading = useLoanStore((state) => state.setLoading);
   const fetchLoans = useLoanStore((state) => state.fetchLoans);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const navigate = useNavigate();
   const { handleMenuOpen, LoanMenu } = useLoanActionsMenu();
   const columns = getLoanColumns(handleMenuOpen);
 
@@ -26,6 +27,7 @@ const GetBooks: React.FC = () => {
   const filteredLoans = useSearch(loans, searchTerm, fuseConfigs.loans);
 
   if (loading) return <LoadingSpinner />;
+  if(!localStorage.getItem("jwt")) navigate("/login");  
 
   return (
     <DataGridLayout

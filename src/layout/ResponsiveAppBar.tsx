@@ -26,9 +26,17 @@ interface Props {
    */
   window?: () => Window;
 }
-
+const isLoggedIn = localStorage.getItem("jwt");
 const drawerWidth = 240;
-const navItems = ["Dashboard", "Users", "Authors", "Books", "Loans", "Login"];
+const navItems = [
+  "Dashboard",
+  "Users",
+  "Authors",
+  "Books",
+  "Loans",
+  isLoggedIn ? "Logout" : "Login",
+  ...(!isLoggedIn ? ["Register"] : []),
+];
 
 export default function DrawerAppBar(props: Props) {
   const { window } = props;
@@ -52,6 +60,12 @@ export default function DrawerAppBar(props: Props) {
               component={Link}
               to={`/${item.toLowerCase()}`}
               sx={{ textAlign: "center" }}
+              onClick={() => {
+              if (item.toLowerCase() === "logout") {
+                localStorage.removeItem("jwt");
+                location.reload();
+              }
+              }}
             >
               <ListItemText primary={item} />
             </ListItemButton>
@@ -121,6 +135,12 @@ export default function DrawerAppBar(props: Props) {
                     textTransform: "none",
                     fontWeight: "400",
                   }}
+                   onClick={() => {
+              if (item.toLowerCase() === "logout") {
+                localStorage.removeItem("jwt");
+                location.reload();
+              }
+              }}
                 >
                   {item}
                 </Button>

@@ -3,7 +3,7 @@ import "./App.css";
 import { Box, Container, CssBaseline, ThemeProvider } from "@mui/material";
 import ResponsiveAppBar from "./layout/ResponsiveAppBar";
 import PostUsers from "./routes/users/PostUsers";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import UpdateUser from "./routes/users/UpdateUser";
 import GetAuthors from "./routes/authors/GetAuthors";
 import PostAuthors from "./routes/authors/PostAuthors";
@@ -18,6 +18,7 @@ import { useThemeContext } from "./hooks/useThemeContext";
 import { NotificationManager } from "./components/Miscellaneous/NotificationManager";
 import Dashboard from "./layout/Dashboard";
 import LoginForm from "./routes/login/LoginForm";
+import RegisterForm from "./routes/login/RegisterForm";
 
 
 function AppContent() {
@@ -51,6 +52,7 @@ function AppContent() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/login" element={<LoginForm />} />
+              <Route path="/register" element={<RegisterForm />} />
             </Routes>
           </Container>
           <NotificationManager />

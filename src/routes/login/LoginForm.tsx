@@ -4,8 +4,6 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNotification } from "../../hooks/useNotification";
 import { useNavigate } from "react-router";
 import type { LoginInfo } from "../../types/miscellaneous/LoginInfo";
-import { useUserStore } from "../../store/userStore";
-
 export default function LoginForm() {
   const {
     register,
@@ -15,8 +13,9 @@ export default function LoginForm() {
 
   const { showSuccess, showError } = useNotification();
   const navigate = useNavigate();
-  const loggedIn = useUserStore((state) => state.loggedIn);
-  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const loggedIn = localStorage.getItem("jwt") !== null;
+  const userEmail = localStorage.getItem("username");
+  const displayName = userEmail || "User";
 
   const onSubmit: SubmitHandler<LoginInfo> = async (data) => {
     try {
@@ -27,9 +26,10 @@ export default function LoginForm() {
       console.log(data);
       if (response.status === 200) {
         localStorage.setItem("jwt", response.data.token);
+        localStorage.setItem("username", JSON.stringify(response.data.username));
         console.log(response);
-        showSuccess(`Logged in successfully, welcome back ${response.data.username}!`);
-        setLoggedIn(true);
+        showSuccess(`Logged in successfully, welcome back!`);
+        location.reload();
       }
 
       setTimeout(() => {
@@ -47,9 +47,10 @@ export default function LoginForm() {
   };
 
   return loggedIn ? (
-    <Paper>
+    <Paper elevation={3} sx={{ display: "flex", justifyContent: "center", alignItems: "center", p: 4, maxWidth: 400, mx: "auto", mt: 4 }} >
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
-        You are logged in, welcome back
+        You are currently logged in as {displayName}
+        <Button onClick={() => navigate("/dashboard")}>Go to Dashboard?</Button>
       </Typography>
     </Paper>
   ) : (
@@ -92,10 +93,7 @@ export default function LoginForm() {
           variant="contained"
           sx={{
             mt: 2,
-            backgroundColor: "#19bfcf",
-            "&:hover": {
-              backgroundColor: "#14959c",
-            },
+            backgroundColor: "primary",
           }}
         >
           Log In!
