@@ -8,6 +8,7 @@ import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
 import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 import { useNavigate } from "react-router";
+import { useAuth } from "../../hooks/useAuth";
 
 const GetBooks: React.FC = () => {
   const books = useBookStore((state) => state.books);
@@ -28,21 +29,22 @@ const GetBooks: React.FC = () => {
   }, [books.length, fetchBooks, setLoading]);
 
   const filteredBooks = useSearch(books, searchTerm, fuseConfigs.books);
+  const { isAdmin } = useAuth();
 
   if (loading) return <LoadingSpinner />;
   if(!localStorage.getItem("jwt")) navigate("/login");
 
   return (
     <DataGridLayout
-      title="Manage Books"
-      addUrl="/books/post"
+      title={isAdmin ? "Manage Books" : "Books"}
+      addUrl={isAdmin ? "/books/post" : undefined}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       rows={filteredBooks}
       columns={columns}
       loading={loading}
     >
-      <BookMenu />
+      {isAdmin && <BookMenu />}
     </DataGridLayout>
   );
 };

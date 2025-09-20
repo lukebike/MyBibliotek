@@ -3,7 +3,7 @@ import "./App.css";
 import { Box, Container, CssBaseline, ThemeProvider } from "@mui/material";
 import ResponsiveAppBar from "./layout/ResponsiveAppBar";
 import PostUsers from "./routes/users/PostUsers";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes} from "react-router-dom";
 import UpdateUser from "./routes/users/UpdateUser";
 import GetAuthors from "./routes/authors/GetAuthors";
 import PostAuthors from "./routes/authors/PostAuthors";
@@ -19,11 +19,17 @@ import { NotificationManager } from "./components/Miscellaneous/NotificationMana
 import Dashboard from "./layout/Dashboard";
 import LoginForm from "./routes/login/LoginForm";
 import RegisterForm from "./routes/login/RegisterForm";
+import { useUserStore } from "./store/userStore";
+import { useEffect } from "react";
 
 
 function AppContent() {
   const { theme, isDark } = useThemeContext();
- 
+ const initializeAuth = useUserStore(state => state.initializeAuth);
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
 
   return (
     <ThemeProvider theme={theme}>

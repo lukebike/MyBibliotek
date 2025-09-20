@@ -7,8 +7,9 @@ import { fuseConfigs } from "../../config/fuseConfigs";
 import { useSearch } from "../../hooks/useSearch";
 import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
-const GetBooks: React.FC = () => {
+const GetLoans: React.FC = () => {
   const loans = useLoanStore((state) => state.loans);
   const loading = useLoanStore((state) => state.loading);
   const setLoading = useLoanStore((state) => state.setLoading);
@@ -25,23 +26,24 @@ const GetBooks: React.FC = () => {
   }, [loans.length, fetchLoans, setLoading]);
 
   const filteredLoans = useSearch(loans, searchTerm, fuseConfigs.loans);
-
+  const { isAdmin } = useAuth();
   if (loading) return <LoadingSpinner />;
   if(!localStorage.getItem("jwt")) navigate("/login");  
 
+
   return (
     <DataGridLayout
-      title="Manage Loans"
-      addUrl="/loans/post"
+      title={isAdmin ? "Manage Loans" : "Loans"}
+      addUrl={isAdmin ? "/loans/post" : undefined}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       rows={filteredLoans}
       columns={columns}
       loading={loading}
     >
-      <LoanMenu />
+      {isAdmin && <LoanMenu />}
     </DataGridLayout>
   );
 };
 
-export default GetBooks;
+export default GetLoans;

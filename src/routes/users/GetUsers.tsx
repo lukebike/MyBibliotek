@@ -7,6 +7,7 @@ import { useSearch } from "../../hooks/useSearch";
 import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { DataGridLayout } from "../../components/Datagrid/DataGridLayout";
 import { useNavigate } from "react-router";
+import { useAuth } from "../../hooks/useAuth";
 
 const GetUsers: React.FC = () => {
   const users = useUserStore((state) => state.users);
@@ -25,21 +26,22 @@ const GetUsers: React.FC = () => {
   }, [users.length, fetchUsers, setLoading]);
 
   const filteredUsers = useSearch(users, searchTerm, fuseConfigs.users);
+  const { isAdmin } = useAuth();
 
   if (loading) return <LoadingSpinner />;
   if(!localStorage.getItem("jwt")) navigate("/login")
 
   return (
     <DataGridLayout
-      title="Manage Users"
-      addUrl="/users/post"
+      title={isAdmin ? "Manage Users" : "Users"}
+      addUrl={isAdmin ? "/users/post" : undefined}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       rows={filteredUsers}
       columns={columns}
       loading={loading}
     >
-      <UserMenu />
+      {isAdmin && <UserMenu />}
     </DataGridLayout>
   );
 };

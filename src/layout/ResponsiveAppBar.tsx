@@ -18,6 +18,7 @@ import { Link } from "react-router";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useThemeContext } from "../hooks/useThemeContext";
+import { useAuth } from "../hooks/useAuth";
 
 interface Props {
   /**
@@ -27,6 +28,7 @@ interface Props {
   window?: () => Window;
 }
 const isLoggedIn = localStorage.getItem("jwt");
+
 const drawerWidth = 240;
 const navItems = [
   "Dashboard",
@@ -42,6 +44,7 @@ export default function DrawerAppBar(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { isDark, toggleTheme } = useThemeContext();
+  const clearAuth = useAuth();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -62,7 +65,7 @@ export default function DrawerAppBar(props: Props) {
               sx={{ textAlign: "center" }}
               onClick={() => {
               if (item.toLowerCase() === "logout") {
-                localStorage.removeItem("jwt");
+                clearAuth.clearAuth();
                 location.reload();
               }
               }}

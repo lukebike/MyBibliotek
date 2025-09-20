@@ -7,6 +7,7 @@ import { useAuthorStore } from "../../store/authorStore";
 import { fuseConfigs } from "../../config/fuseConfigs";
 import { LoadingSpinner } from "../../components/Miscellaneous/LoadingSpinner";
 import { useNavigate } from "react-router";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function GetAuthors() {
   const { handleMenuOpen, AuthorMenu } = useAuthorActionsMenu();
@@ -26,6 +27,7 @@ export default function GetAuthors() {
 
  
   const filteredAuthors = useSearch(authors, searchTerm, fuseConfigs.authors);
+  const { isAdmin } = useAuth();
 
   if (loading || !authors) {
     return <LoadingSpinner />;
@@ -34,15 +36,15 @@ export default function GetAuthors() {
 
   return (
     <DataGridLayout
-      title="Manage Authors"
-      addUrl="/authors/post"
+      title={isAdmin ? "Manage Authors" : "Authors"}
+      addUrl={isAdmin ? "/authors/post" : undefined}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       rows={filteredAuthors}
       columns={columns}
       loading={loading}
     >
-      <AuthorMenu />
+      {isAdmin && <AuthorMenu />}
     </DataGridLayout>
   );
 }

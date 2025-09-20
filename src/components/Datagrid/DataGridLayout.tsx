@@ -9,7 +9,7 @@ import type { Loan } from "../../types/loans/Loan";
 
 interface DataGridLayoutProps {
   title: string;
-  addUrl: string;
+  addUrl?: string;
   searchTerm: string;
   onSearchChange: (value: string) => void;
   rows: User[] | Book[] | Author[] | Loan[];
@@ -39,6 +39,7 @@ export const DataGridLayout: React.FC<DataGridLayoutProps> = ({
   <Paper elevation={3} sx={{ p: 3 }}>
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
       <Typography variant="h4">{title}</Typography>
+      {addUrl && (
       <Button
         href={addUrl}
         variant="contained"
@@ -49,7 +50,9 @@ export const DataGridLayout: React.FC<DataGridLayoutProps> = ({
       >
         Add {title.split(" ")[1]}
       </Button>
+      )}
     </Box>
+    
     <TextField
       fullWidth
       placeholder="Search..."

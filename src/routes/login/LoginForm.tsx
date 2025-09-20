@@ -4,6 +4,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNotification } from "../../hooks/useNotification";
 import { useNavigate } from "react-router";
 import type { LoginInfo } from "../../types/miscellaneous/LoginInfo";
+import { useUserStore } from "../../store/userStore";
 export default function LoginForm() {
   const {
     register,
@@ -13,9 +14,7 @@ export default function LoginForm() {
 
   const { showSuccess, showError } = useNotification();
   const navigate = useNavigate();
-  const loggedIn = localStorage.getItem("jwt") !== null;
-  const userEmail = localStorage.getItem("username");
-  const displayName = userEmail || "User";
+  const {isLoggedIn, username, setAuth} = useUserStore();
 
   const onSubmit: SubmitHandler<LoginInfo> = async (data) => {
     try {
@@ -25,15 +24,17 @@ export default function LoginForm() {
       });
       console.log(data);
       if (response.status === 200) {
-        localStorage.setItem("jwt", response.data.token);
-        localStorage.setItem("username", JSON.stringify(response.data.username));
+        const {token, username, roles} = response.data;
+        localStorage.setItem("jwt", token);
+        setAuth(username, roles);
         console.log(response);
         showSuccess(`Logged in successfully, welcome back!`);
-        location.reload();
       }
 
       setTimeout(() => {
-        navigate("/users");
+        navigate("/dashboard");
+        location.reload();
+        
       }, 1000);
     } catch (error) {
       showError(`Failed to login.`);
@@ -46,10 +47,10 @@ export default function LoginForm() {
     }
   };
 
-  return loggedIn ? (
+  return isLoggedIn ? (
     <Paper elevation={3} sx={{ display: "flex", justifyContent: "center", alignItems: "center", p: 4, maxWidth: 400, mx: "auto", mt: 4 }} >
       <Typography variant="h5" sx={{ textAlign: "center", mb: 5 }}>
-        You are currently logged in as {displayName}
+        You are currently logged in as {username}
         <Button onClick={() => navigate("/dashboard")}>Go to Dashboard?</Button>
       </Typography>
     </Paper>
