@@ -42,6 +42,7 @@ export const getAuthorColumns = (
       );
     },
   },
+  
   {
     field: "actions",
     type: "actions",
